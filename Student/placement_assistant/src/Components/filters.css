@@ -1,0 +1,74 @@
+.filters {
+    display: flex;
+    justify-content: flex-start; /* Align items from the left */
+    gap: 10px; /* Space between each filter element */
+    flex-wrap: wrap; /* Allows the elements to wrap when there's not enough space */
+    align-items: center; /* Align items vertically in the center */
+    padding: 10px;   
+    margin-left: 10px;
+  }
+  
+  .filters > div {
+    display: flex;
+    align-items: center; /* Align label and select input in the center vertically */
+    gap: 15px; /* Space between label and select */
+  }
+  
+  /* Force SSC filter to the next line */
+  .filters .ssc-filter {
+    flex-basis: 40%; /* Take full width */
+    margin-top: 10px; /* Optional: space between filters */
+  }
+  .filters .hsc-filter {
+   margin-left:-21.2%;
+    margin-top: 10px; /* Optional: space between filters */
+  }
+  
+  .select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100px; /* Width for select fields */
+    background-color: #ccc;
+  }
+  .download-btn{
+    width: 150px; 
+    height:37px;
+    padding:0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+  }
+  input[type="text"] {
+    width: 200px; /* Set the width for the search input field */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  label {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  .clear-btn {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #22b1bb; /* Red background color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px; /* Space between the button and other elements */
+    transition: background-color 0.3s ease;
+  }
+  
+  .clear-btn:hover {
+    background-color: #078790; /* Darker red on hover */
+  }
+  

@@ -1,0 +1,93 @@
+/* Table Container */
+.student-table-container {
+    max-width: 100%;
+    overflow-x: auto; /* Allows horizontal scrolling if the table is too wide */
+    margin-top: 20px;
+    margin-left:0px;
+  }
+  
+  /* Table Styling */
+  .student-table {
+    width: 100%;
+    border-collapse: collapse; /* Ensures no space between table cells */
+    background-color: #fff; /* White background for the table */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    border-radius: 8px; /* Rounded corners for table */
+    overflow: hidden;
+    margin-left: 0%;
+  }
+  
+  /* Table Header */
+  .student-table th {
+    background-color: #22b1bb; /* Light teal background */
+    color: white; /* White text color */
+    padding: 12px 15px; /* Padding for header cells */
+    text-align: left; /* Left-align text in header */
+    font-size: 14px; /* Slightly smaller font size */
+    font-weight: 600; /* Bold text for the header */
+  }
+  
+  /* Table Body Cells */
+  .student-table td {
+    padding: 12px 15px; /* Padding for body cells */
+    text-align: left; /* Align text to the left */
+    border-bottom: 1px solid #ddd; /* Light gray border between rows */
+    font-size: 13px; /* Smaller font size for the body */
+    color: #333; /* Dark text color */
+  }
+  
+  /* Hover Effect for Rows */
+  .student-table tr:hover {
+    background-color: #f1f1f1; /* Light gray background when hovering over rows */
+  }
+  
+  /* Striped Rows for Better Readability */
+  .student-table tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for even rows */
+  }
+  
+  /* Button Styling */
+  .view-btn {
+    padding: 6px 12px;
+    background-color: #22b1bb; /* Button background color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .view-btn:hover {
+    background-color: #007bff; /* Change button color on hover */
+    font-weight: bold; /* Make text bold on hover */
+  }
+  
+  /* Responsive Design for Small Screens */
+  @media (max-width: 768px) {
+    .student-table th, .student-table td {
+      padding: 8px; /* Smaller padding for mobile */
+    }
+  
+    .student-table {
+      font-size: 12px; /* Smaller font size for smaller screens */
+    }
+  
+    .view-btn {
+      padding: 5px 10px; /* Smaller button size on mobile */
+    }
+  }
+  .action{
+    display: flex; /* Use flexbox layout */
+    justify-content: flex-start; /* Align buttons to the left */
+    gap: 10px; /* Space between buttons */
+   
+    flex-direction: row;
+  }
+  .no-students-message{
+    margin-left: 6%;
+    font-size: medium;
+    font-weight: bold;
+    color:rgb(127, 2, 2);
+    text-align: center;
+  }

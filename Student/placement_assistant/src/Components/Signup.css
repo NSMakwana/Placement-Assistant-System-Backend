@@ -1,0 +1,116 @@
+/* Container for the entire login page */
+.SignupPage_Container {
+  display: flex; /* Flex layout for side-by-side design */
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  /* background-color: #f9fafb; Light background color */
+  /* margin-top: 5px; */
+  
+}
+
+/* Header styling (if needed) */
+.Header {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 60px;
+  background-color: #22b1bb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Left side: Image section */
+.Login_image {
+  flex: 1; /* Take up 50% of the space */
+  display: flex;
+  justify-content: center;
+  align-items:top;
+  background-color: #156a70;;
+}
+
+
+
+/* Right side: Login form section */
+.SignupPage {
+  flex: 1; /* Take up 50% of the space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffffff; /* White background */
+  box-shadow: -35px 0 20px rgba(248, 245, 245, 0.1); 
+}
+.Login_image h3{
+  color:silver;
+  font-weight:400;
+  font-size:20px;
+  margin-top: 0;
+  text-transform:uppercase;
+}
+
+.Login_image #t{
+  color:rgb(234, 232, 232);
+  font-weight:400;
+  font-size:23px;
+  margin-top: 0;
+  text-transform:uppercase;
+  text-align:center;
+  font-family:Arial, Helvetica, sans-serif;
+}
+.SignupPage h3 {
+  
+  font-size: 1.5rem;
+  color:  #156a70; /* Matching brand color */
+  margin-bottom: 20px;
+}
+
+.SignupPage form {
+  width: 80%; /* Centered form */
+  max-width: 400px; /* Prevent it from becoming too wide */
+}
+
+.SignupPage form .form-label {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.SignupPage form input {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.SignupPage form input:focus {
+  border-color:  #146b71;
+  outline: none;
+}
+
+.SignupPage button {
+  width: 100%;
+  padding: 10px;
+  background-color: #22b1bb;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.SignupPage button:hover {
+  background-color: #1c949c;
+}
+.LSbuttons{
+  display: flex; /* Flex layout for side-by-side design */
+  gap: 80px;
+  width:100%;
+}

@@ -1,0 +1,33 @@
+/* App Container */
+.app {
+  display: flex; /* Flexbox for sidebar and content layout */
+  height: 100vh; /* Full screen height */
+}
+
+/* Sidebar */
+.sidebar {
+  flex: 0 0 15%; /* Sidebar takes 15% of the width */
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1; /* Main content takes the remaining space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.main-content > header {
+  height: 50px; /* Fixed height for header */
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Content Area */
+.content {
+  flex: 1; /* Remaining space goes to content */
+  padding: 20px;
+  overflow-y: auto; 
+  
+}

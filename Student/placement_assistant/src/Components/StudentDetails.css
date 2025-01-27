@@ -1,0 +1,84 @@
+/* Main Container */
+.student-details-container {
+    padding: 20px;
+    background-color:white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width:100%;
+  }
+  
+  /* Flexbox Layout for Table and Photo */
+  .details-layout {
+    display: flex;
+    flex-direction: row; /* Align items side by side */
+    align-items: flex-start; /* Align items at the top */
+    gap: 20px; /* Space between table and photo */
+    width: 100%; /* Ensure the container spans the full width */
+  }
+  
+  /* Table Container */
+  .details-table-container {
+    flex: 3; /* Take up most of the space */
+  }
+  
+  /* Photo Container */
+  .student-photo {
+    flex: 1; /* Take up less space */
+    text-align: center; /* Center the photo */
+   
+    
+  }
+  
+  .passport-photo {
+    width: 120px; /* Fixed width */
+    height: 120px; /* Fixed height */
+    object-fit: cover; /* Ensures the image scales properly */
+    border: 2px solid #ddd; /* Optional border for photo */
+    border-radius: 8px; /* Rounded corners for the photo */
+    position:fixed;
+    z-index:1000;
+    margin-left:-70px;
+  }
+  
+  /* Table Styling */
+  .details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+  
+  .details-table th,
+  .details-table td {
+    text-align: left;
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+  
+  .details-table th {
+    background-color: #ccc;
+    color: black;
+    font-weight: bold;
+    width:25%;
+    
+  }
+  
+  .details-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .details-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  .download{
+    width: 150px; 
+    height:37px;
+    padding:0;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    margin-top:-67px;
+    margin-left:780px;
+
+    position:fixed;
+  }
