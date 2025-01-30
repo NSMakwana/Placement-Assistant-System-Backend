@@ -1,0 +1,104 @@
+/* Dashboard container */
+.dashboard {
+  margin-left: 17%; /* Sidebar width alignment */
+  width: auto; /* Remaining width for the dashboard */
+  padding: 1px; /* Space around the content */
+  box-sizing: border-box; /* Include padding in the total width */
+  /* Prevent horizontal overflow issues */
+  height:25%; /* Full screen height */
+  display: flex; /* Flexbox for vertical layout */
+  flex-direction:column;
+  /* box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2);/* Shadow for depth */
+  /* border-bottom: 2px solid #22b1bb; */
+  font-size:smaller;
+ /* Lighter background for better contrast */
+  
+}
+
+/* View Details Section */
+.viewdetails {
+  margin-top:90px; /* Space below navigation buttons */
+  /* Use the full available width */
+  padding: 20px; /* Space inside the section */
+  box-sizing: border-box; /* Include padding in total width */
+  /* Prevent horizontal overflow */
+  /* box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2); Shadow for depth */
+  /* border-bottom: 2px solid #22b1bb; */
+  background-color: #ffffff; /* White background for clarity */
+  margin-bottom: 0;
+  width:100%;
+  
+}
+
+/* Table Styling */
+.table {
+  width: 100%; /* Full width */
+  border-collapse: collapse; /* Remove gaps between table cells */
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd; /* Light border for table cells */
+  padding: 8px; /* Space inside cells */
+  text-align: left; /* Left-align text */
+}
+
+.table th {
+  background-color: #f4f4f4; /* Light background for header */
+}
+
+/* Navigation Buttons */
+
+   /* Space between buttons */
+  /* Freeze the buttons section */
+.buttons {
+  position:fixed; /* Keeps the buttons section in view while scrolling */
+  top:54px; /* Sticks to the top of the viewport */
+  /* Ensures it stays on top of other elements */
+  background-color: white; /* Matches the background to avoid transparency */
+  padding: 10px; /* Adds padding for a clean look */
+  border-bottom: 2px solid #ddd; /* Optional: Adds a separator below the sticky section */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow for clarity */
+  width:100%;
+  margin-left:0.5%;
+  box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  border-bottom: 2px solid #22b1bb;
+}
+
+
+  
+
+
+.buttons button {
+  padding: 10px 15px; /* Size of buttons */
+  color: black; /* Button text color */  
+  cursor: pointer; /* Hand cursor on hover */
+  background-color:white; /* Transparent background */
+  font-size:large; /* Larger text for buttons */
+  border-style: none;
+  
+}
+
+.buttons button:hover {
+  font-weight: bold;
+  background-color:transparent/* Highlight on hover */
+}
+.back-btn {
+  padding: 10px 16px;
+  background-color:white;   
+  border-style: none;
+  cursor: pointer;
+  margin-top:7px;
+  margin-bottom:0px;
+  margin-left:950px;
+  position:fixed;
+  z-index:1000;
+}
+
+.breadcrumb {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 0px;
+  color: #707070; /* Adjust as needed */
+  margin-left: 15px;
+}
