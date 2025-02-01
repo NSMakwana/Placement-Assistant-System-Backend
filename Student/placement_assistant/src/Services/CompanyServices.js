@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/companies';
+const API_URL = 'https://placement-assistant-system.onrender.com/api/companies';
 
 class CompanyServiceClass {
     getCompany() {
