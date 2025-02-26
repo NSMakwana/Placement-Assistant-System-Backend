@@ -58,7 +58,7 @@ public class CompanyController {
     }
 
     // Filter companies by batch
-    @GetMapping("/batch/{batch}")
+    @GetMapping("https://placement-assistant-system.onrender.com/api/companies/batch/{batch}")
     public ResponseEntity<List<String>> getCompaniesByBatch(@PathVariable String batch) {
         logger.info("Fetching company names for batch: {}", batch);
         List<Company> companies = companyService.getCompaniesByBatch(batch);
