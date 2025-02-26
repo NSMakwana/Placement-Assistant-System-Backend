@@ -5,7 +5,7 @@ const CompanyFilters = ({ onFilter }) => {
   const [batch, setBatch] = useState("");
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
-  const [program, setProgram] = useState("");
+  const [designation, setDesignation] = useState("");
   const [search, setSearch] = useState("");
 
   // Fetch companies when a batch is selected
@@ -48,12 +48,13 @@ const CompanyFilters = ({ onFilter }) => {
     if (filterType === "company") {
       setSelectedCompany(value);
     }
-    if (filterType === "program") {
-      setProgram(value);
+    if (filterType === "designation") {
+      setDesignation(value);
     }
-    if (filterType === "search") {
+    if (filterType === "search") {    
       setSearch(value);
     }
+   
 
     onFilter(filterType, value); // Send filter updates to parent
   };
@@ -62,13 +63,13 @@ const CompanyFilters = ({ onFilter }) => {
   const handleClearFilters = () => {
     setBatch("");
     setSelectedCompany("");
-    setProgram("");
+    setDesignation("");
     setSearch("");
 
     onFilter("clear", {
       batch: "",
       company: "",
-      program: "",
+      designation: "",
       search: "",
       companies: [],
     });
@@ -114,15 +115,20 @@ const CompanyFilters = ({ onFilter }) => {
 
       {/* Program Filter */}
       <div>
-        <label>Program</label>
+        <label>Designation</label>
         <select
           className="cselect"
           value={program}
-          onChange={(e) => handleFilterChange("program", e.target.value)}
-        >
-          <option value="">Select</option>
-          <option value="MCA">MCA</option>
-          <option value="B.Tech">B.Tech</option>
+          onChange={(e) => handleFilterChange("designation", e.target.value)}
+          disabled={!batch || !company ||companies.length === 0}
+          >
+            <option value="">Select</option>
+            {selectedCompany &&
+            companies
+              .find((company) => company.name === selectedCompany)?.designations
+              ?.map((designation, index) => (
+                <option key={index} value={designation}>{designation}</option>
+              ))}
         </select>
       </div>
 
