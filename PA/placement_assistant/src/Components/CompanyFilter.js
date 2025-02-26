@@ -17,7 +17,7 @@ const CompanyFilters = ({ onFilter }) => {
 
       try {
         const response = await fetch(
-         `https://placement-assistant-system.onrender.com/api/companies/batch/{batch}`                                 
+         `https://placement-assistant-system.onrender.com/api/companies/batch/${batch}`                                 
         );
         if (response.ok) {
           const data = await response.json();
