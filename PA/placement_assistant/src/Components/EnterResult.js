@@ -15,7 +15,8 @@ const EnterResult = ({ selectedCompany }) => {
     const fetchRounds = async () => {
       try {
         const response = await fetch(
-          `https://your-app-name.onrender.com/api/companies/${selectedCompany}/rounds`
+
+          `https://placement-assistant-system.onrender.com/api/companies/${selectedCompany}/rounds`
         );
         if (response.ok) {
           const data = await response.json();
