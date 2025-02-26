@@ -118,9 +118,9 @@ const CompanyFilters = ({ onFilter }) => {
         <label>Designation</label>
         <select
           className="cselect"
-          value={program}
+          value={designation}
           onChange={(e) => handleFilterChange("designation", e.target.value)}
-          disabled={!batch || !company ||companies.length === 0}
+          disabled={!selectedCompany}
           >
             <option value="">Select</option>
             {selectedCompany &&
