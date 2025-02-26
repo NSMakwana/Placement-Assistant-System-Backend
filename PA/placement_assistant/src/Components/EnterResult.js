@@ -19,6 +19,7 @@ const EnterResult = ({ selectedCompany }) => {
         );
         if (response.ok) {
           const data = await response.json();
+          console.log("Fetched Rounds:", data); 
           setRounds(data);
         } else {
           console.error("Failed to fetch rounds.");

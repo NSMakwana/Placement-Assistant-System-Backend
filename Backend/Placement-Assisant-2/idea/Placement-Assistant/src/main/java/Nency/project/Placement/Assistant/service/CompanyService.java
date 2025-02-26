@@ -37,24 +37,18 @@ public class CompanyService {
     public List<Map<String, String>> getCompanyRounds(String cname) {
         Optional<Company> company = companyRepository.findByName(cname); // Find company by name
 
-        if (company.isPresent()) {
-            return company.get().getDesignations()
-                    .stream()
-                    .flatMap(designation -> designation.getPlacementProcess().stream())
-                    .map(process -> Map.of("round", process.getRound())) // Extract only round names
-                    .toList();
-        }
 
-        return Collections.emptyList(); // Return empty list if company not found
+        return company.map(value -> value.getDesignations()
+                .stream()
+                .flatMap(designation -> designation.getPlacementProcess().stream())
+                .map(process -> Map.of("round", process.getRound())) // Extract only round names
+                .toList()).orElse(Collections.emptyList());
+
     }
 
     public Company saveCompany(Company company) {
         return companyRepository.save(company);
     }
 
-    // Fetch companies by program (or other fields, like designation)
 
-
-    // Additional methods can be added for more complex queries, for example:
-    // Fetch companies by location, designation, or other business-specific fields.
 }
