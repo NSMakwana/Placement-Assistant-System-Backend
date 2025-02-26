@@ -17,7 +17,7 @@ const CompanyFilters = ({ onFilter }) => {
 
       try {
         const response = await fetch(
-         `http://localhost:8080/api/companies/batch/${batch}`                                 
+         `https://placement-assistant-system.vercel.app/api/companies?batch=${batch}`                                 
         );
         if (response.ok) {
           const data = await response.json();
