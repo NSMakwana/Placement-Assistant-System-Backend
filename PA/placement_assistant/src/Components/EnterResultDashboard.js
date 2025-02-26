@@ -8,6 +8,7 @@ const EnterResultDashboard = ({ selectedMenu }) => {
   const [Option, setOption] = useState("EnterDetails"); // Default to "EnterDetails"
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState("");
   
   useEffect(() => {
     // Fetch all companies initially
@@ -26,19 +27,12 @@ const EnterResultDashboard = ({ selectedMenu }) => {
       return;
     }
 
-    if (key === "batch" && value) {
-      filtered = filtered.filter((c) => c.batch === value);
-    }
-
-    if (key === "program" && value) {
-      filtered = filtered.filter((c) => c.program === value);
-    }
-
-    if (key === "search" && value) {
-      filtered = filtered.filter((c) =>
-        c.name.toLowerCase().includes(value.toLowerCase())
-      );
-    }
+    if (key === "company") {
+        setSelectedCompany(value);
+      }
+      if (key === "companies") {
+        setFilteredCompanies(value);
+      }
 
     setFilteredCompanies(filtered);
   };
@@ -54,7 +48,9 @@ const EnterResultDashboard = ({ selectedMenu }) => {
       return (
         <div className="enterResult">
           <CompanyFilters onFilter={handleFilter} />
-          <EnterResult companies={filteredCompanies} /> {/* Pass filtered companies */}
+          <EnterResult companies={filteredCompanies} 
+          selectedCompany={selectedCompany} //  Pass selectedCompany
+           /> 
         </div>
       );
     }

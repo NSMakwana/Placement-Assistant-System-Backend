@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-// import "./EnterResult.css";
+import React, { useEffect, useState } from "react";
+import "./EnterResult.css";
 
-const EnterResult = ({ companies }) => {
-  const [selectedCompany, setSelectedCompany] = useState("");
+const EnterResult = ({ selectedCompany }) => {
   const [rounds, setRounds] = useState([]);
+  const [studentResults, setStudentResults] = useState({});
 
-  // Fetch rounds for selected company
+  // Fetch rounds when a company is selected
   useEffect(() => {
     if (!selectedCompany) {
       setRounds([]);
@@ -31,34 +31,47 @@ const EnterResult = ({ companies }) => {
     fetchRounds();
   }, [selectedCompany]);
 
+  // Handle result entry change
+  const handleResultChange = (round, value) => {
+    setStudentResults({
+      ...studentResults,
+      [round]: value,
+    });
+  };
+
+  // Submit results
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(
+        "https://your-app-name.onrender.com/api/results/enter",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(studentResults),
+        }
+      );
+      if (response.ok) {
+        alert("Results entered successfully!");
+      } else {
+        alert("Failed to submit results.");
+      }
+    } catch (error) {
+      console.error("Error submitting results:", error);
+    }
+  };
+
   return (
     <div className="enter-result-container">
-      {/* Company Selection */}
-      <div className="filter-group">
-        <label>Company</label>
-        <select
-          value={selectedCompany}
-          onChange={(e) => setSelectedCompany(e.target.value)}
-          disabled={companies.length === 0}
-        >
-          <option value="">Select</option>
-          {companies.map((company, index) => (
-            <option key={index} value={company.name}>
-              {company.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Table of Rounds */}
       {selectedCompany && (
         <div className="rounds-table">
+          <h3>Rounds for {selectedCompany}</h3>
           <table>
             <thead>
               <tr>
                 <th>Sr. No</th>
                 <th>Round Name</th>
-                <th>Action</th>
+                <th>Result</th>
               </tr>
             </thead>
             <tbody>
@@ -68,9 +81,17 @@ const EnterResult = ({ companies }) => {
                     <td>{index + 1}</td>
                     <td>{round.round}</td>
                     <td>
-                      <button onClick={() => console.log("Enter result for", round)}>
-                        Enter Result
-                      </button>
+                      <select
+                        value={studentResults[round.round] || ""}
+                        onChange={(e) =>
+                          handleResultChange(round.round, e.target.value)
+                        }
+                      >
+                        <option value="">Select</option>
+                        <option value="Passed">Passed</option>
+                        <option value="Failed">Failed</option>
+                        <option value="Pending">Pending</option>
+                      </select>
                     </td>
                   </tr>
                 ))
@@ -81,6 +102,7 @@ const EnterResult = ({ companies }) => {
               )}
             </tbody>
           </table>
+          <button onClick={handleSubmit}>Submit Results</button>
         </div>
       )}
     </div>
