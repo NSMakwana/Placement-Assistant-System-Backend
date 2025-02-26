@@ -104,7 +104,7 @@ public class CompanyController {
 //        logger.info("Creating new company: {}", company.getName());
 //        return companyService.saveCompany(company);
 //    }
-
+    @CrossOrigin(origins = "https://placement-assistant-system.vercel.app")
     @PostMapping
     public ResponseEntity<?> createCompany(@RequestBody Company company) {
         try {
