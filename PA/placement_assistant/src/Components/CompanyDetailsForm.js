@@ -100,7 +100,7 @@ const CompanyDetailsForm = () => {
     console.log('Submitting form data:', formData);
 
     try {
-      const response = await fetch('http://localhost:8080/api/companies', {
+      const response = await fetch('https://placement-assistant-system.onrender.com/api/companies', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
