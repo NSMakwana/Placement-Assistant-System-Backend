@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./EnterResult.css";
+// import "./EnterResult.css";
 
 const EnterResult = ({ companies }) => {
   const [selectedCompany, setSelectedCompany] = useState("");
