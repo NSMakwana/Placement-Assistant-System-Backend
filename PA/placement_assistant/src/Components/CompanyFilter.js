@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./CompanyFilter.css";
+
 const CompanyFilters = ({ onFilter }) => {
   const [batch, setBatch] = useState("");
-  const [companies, setCompanies] = useState([]); // Stores companies for the selected batch
+  const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [program, setProgram] = useState("");
   const [search, setSearch] = useState("");
@@ -11,55 +12,66 @@ const CompanyFilters = ({ onFilter }) => {
   useEffect(() => {
     const fetchCompaniesByBatch = async () => {
       if (!batch) {
-        setCompanies([]); // Clear companies if no batch is selected
+        setCompanies([]);
+        onFilter("companies", []); // Send empty list when batch is cleared
         return;
       }
 
       try {
         const response = await fetch(
-         `https://placement-assistant-system.onrender.com/api/companies/batch/${batch}`                                 
+          `https://placement-assistant-system.onrender.com/api/companies/batch/${batch}`
         );
         if (response.ok) {
           const data = await response.json();
           setCompanies(data);
+          onFilter("companies", data); // Send filtered companies to parent
         } else {
           console.error("Failed to fetch companies for batch.");
-          setCompanies([]); // Clear if fetch fails
+          setCompanies([]);
+          onFilter("companies", []);
         }
       } catch (error) {
         console.error("Error fetching companies by batch:", error);
         setCompanies([]);
+        onFilter("companies", []);
       }
     };
 
     fetchCompaniesByBatch();
-  }, [batch]); // Dependency array ensures this runs when `batch` changes
+  }, [batch]); // Runs when batch changes
 
   // Handle filter changes
   const handleFilterChange = (filterType, value) => {
-    if (filterType === "batch") setBatch(value);
-    if (filterType === "company") setSelectedCompany(value);
-    if (filterType === "program") setProgram(value);
-    if (filterType === "search") setSearch(value);
+    if (filterType === "batch") {
+      setBatch(value);
+    }
+    if (filterType === "company") {
+      setSelectedCompany(value);
+    }
+    if (filterType === "program") {
+      setProgram(value);
+    }
+    if (filterType === "search") {
+      setSearch(value);
+    }
 
-    onFilter(filterType, value); // Notify parent about filter changes
+    onFilter(filterType, value); // Send filter updates to parent
   };
 
   // Clear all filters
   const handleClearFilters = () => {
-    const clearedFilters = {
-      batch: "",
-      company: "",
-      program: "",
-      search: "",
-    };
-
     setBatch("");
     setSelectedCompany("");
     setProgram("");
     setSearch("");
 
-    onFilter("clear", clearedFilters);
+    onFilter("clear", {
+      batch: "",
+      company: "",
+      program: "",
+      search: "",
+      companies: [],
+    });
   };
 
   return (
@@ -89,7 +101,7 @@ const CompanyFilters = ({ onFilter }) => {
           className="cselect"
           value={selectedCompany}
           onChange={(e) => handleFilterChange("company", e.target.value)}
-          disabled={!batch || companies.length === 0} // Disable dropdown if no batch selected or no companies available
+          disabled={!batch || companies.length === 0}
         >
           <option value="">Select</option>
           {companies.map((company, index) => (
@@ -116,11 +128,7 @@ const CompanyFilters = ({ onFilter }) => {
 
       {/* Search Filter */}
       <div>
-        <img src="/Images/Search.png"
-          height="22px"
-          width="22px"
-          alt="search"
-        />
+        <img src="/Images/Search.png" height="22px" width="22px" alt="search" />
         <input
           type="text"
           placeholder="Search..."
