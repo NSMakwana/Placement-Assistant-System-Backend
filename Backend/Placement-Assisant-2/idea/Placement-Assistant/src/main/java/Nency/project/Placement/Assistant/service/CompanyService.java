@@ -5,7 +5,10 @@ import Nency.project.Placement.Assistant.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CompanyService {
@@ -30,6 +33,19 @@ public class CompanyService {
     // Fetch companies by batch
     public List<Company> getCompaniesByBatch(String batch) {
         return companyRepository.findByBatch(batch);
+    }
+    public List<Map<String, String>> getCompanyRounds(String cname) {
+        Optional<Company> company = companyRepository.findByName(cname); // Find company by name
+
+        if (company.isPresent()) {
+            return company.get().getDesignations()
+                    .stream()
+                    .flatMap(designation -> designation.getPlacementProcess().stream())
+                    .map(process -> Map.of("round", process.getRound())) // Extract only round names
+                    .toList();
+        }
+
+        return Collections.emptyList(); // Return empty list if company not found
     }
 
     public Company saveCompany(Company company) {

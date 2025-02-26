@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "https://placement-assistant-system.vercel.app")
 @RestController
@@ -74,6 +75,20 @@ public class CompanyController {
             return ResponseEntity.ok(companyNames); // Return just the names
         }
     }
+
+    @GetMapping("/{companyName}/rounds")
+    public ResponseEntity<List<Map<String, String>>> getCompanyRounds(@PathVariable String companyName) {
+        logger.info("Fetching rounds for company: {}", companyName);
+        List<Map<String, String>> rounds = companyService.getCompanyRounds(companyName);
+
+        if (rounds.isEmpty()) {
+            logger.warn("No rounds found for company: {}", companyName);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        }
+
+        return ResponseEntity.ok(rounds);
+    }
+
 
 
     // Test the MongoDB connection and get a count of companies
