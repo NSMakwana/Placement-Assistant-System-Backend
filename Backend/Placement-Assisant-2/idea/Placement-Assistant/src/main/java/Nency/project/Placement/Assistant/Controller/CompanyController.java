@@ -109,6 +109,12 @@ public ResponseEntity<List<String>> getCompanyDesignations(@PathVariable String 
 
     return ResponseEntity.ok(designations);
 }
+    @GetMapping("/{companyName}/designations/{designation}/rounds")
+    public List<Map<String, String>> getRoundsByCompanyAndDesignation(
+            @PathVariable String companyName,
+            @PathVariable String designation) {
+        return companyService.getRoundsByCompanyAndDesignation(companyName, designation);
+    }
 
 
     // Test the MongoDB connection and get a count of companies

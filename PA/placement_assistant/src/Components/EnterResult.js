@@ -7,7 +7,7 @@ const EnterResult = ({ selectedCompany }) => {
 
   // Fetch rounds when a company is selected
   useEffect(() => {
-    if (!selectedCompany) {
+    if (!selectedCompany || !selectedDesignation) {
       setRounds([]);
       return;
     }
@@ -16,7 +16,7 @@ const EnterResult = ({ selectedCompany }) => {
       try {
         const response = await fetch(
 
-          `https://placement-assistant-system.onrender.com/api/companies/${selectedCompany}/rounds`
+            `https://placement-assistant-system.onrender.com/api/companies/${selectedCompany}/designations/${selectedDesignation}/rounds`
         );
         if (response.ok) {
           const data = await response.json();
@@ -31,7 +31,7 @@ const EnterResult = ({ selectedCompany }) => {
     };
 
     fetchRounds();
-  }, [selectedCompany]);
+  }, [selectedCompany,selectedDesignation]); // Runs when selectedCompany or Selected Designation changes
 
   // Handle result entry change
   const handleResultChange = (round, value) => {

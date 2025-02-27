@@ -9,6 +9,7 @@ const EnterResultDashboard = ({ selectedMenu }) => {
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedDesignation, setSelectedDesignation] = useState("");
   
   useEffect(() => {
     // Fetch all companies initially
@@ -29,11 +30,15 @@ const EnterResultDashboard = ({ selectedMenu }) => {
 
     if (key === "company") {
         setSelectedCompany(value);
-      }
-      if (key === "companies") {
+    }
+    
+    if (key === "companies") {
         setFilteredCompanies(value);
-      }
+    }
 
+    if (key === "designation") {
+      setSelectedDesignation(value); // Set selected designation
+    }
     setFilteredCompanies(filtered);
   };
 
@@ -49,7 +54,8 @@ const EnterResultDashboard = ({ selectedMenu }) => {
         <div className="enterResult">
           <CompanyFilters onFilter={handleFilter} />
           <EnterResult companies={filteredCompanies} 
-          selectedCompany={selectedCompany} //  Pass selectedCompany
+            selectedCompany={selectedCompany} //  Pass selectedCompany
+            selectedDesignation={selectedDesignation} 
            /> 
         </div>
       );

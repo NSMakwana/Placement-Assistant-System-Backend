@@ -120,7 +120,7 @@ const CompanyFilters = ({ onFilter }) => {
       {/* Batch Filter */}
       <div>
         <label>Batch</label>
-        <select
+        <select         
           className="cselect"
           value={batch}
           onChange={(e) => handleFilterChange("batch", e.target.value)}
