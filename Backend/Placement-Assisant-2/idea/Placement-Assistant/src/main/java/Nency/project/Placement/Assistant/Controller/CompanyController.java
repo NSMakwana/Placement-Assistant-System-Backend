@@ -90,7 +90,7 @@ public class CompanyController {
         return ResponseEntity.ok(rounds);
     }
 
-    import java.util.stream.Collectors;
+
 
 @GetMapping("/{companyName}/designations")
 public ResponseEntity<List<String>> getCompanyDesignations(@PathVariable String companyName) {
@@ -104,7 +104,7 @@ public ResponseEntity<List<String>> getCompanyDesignations(@PathVariable String 
 
     List<String> designations = company.get().getDesignations()
             .stream()
-            .map(designation -> designation.getTitle() != null ? designation.getTitle() : "Unknown") // Fix: Handle null values
+            .map(designation -> designation.getDesignation() != null ? designation.getDesignation() : "Unknown") // Fix: Handle null values
             .collect(Collectors.toList()); 
 
     return ResponseEntity.ok(designations);
