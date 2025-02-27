@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import "./EnterResult.css";
 
-const EnterResult = ({ selectedCompany }) => {
+const EnterResult = ({ selectedCompany,selectedDesignation }) => {
   const [rounds, setRounds] = useState([]);
   const [studentResults, setStudentResults] = useState({});
 
