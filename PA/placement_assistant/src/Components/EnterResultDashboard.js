@@ -24,6 +24,8 @@ const EnterResultDashboard = ({ selectedMenu }) => {
     let filtered = [...companies];
 
     if (key === "clear") {
+      setSelectedCompany("");
+      setSelectedDesignation("");
       setFilteredCompanies([]); // Clear filters
       return;
     }
