@@ -45,7 +45,20 @@ public class CompanyService {
                 .toList()).orElse(Collections.emptyList());
 
     }
+    
+     public List<String> getCompanyDesignations(String companyName) {
+        Optional<Company> company = companyRepository.findByName(companyName);
 
+        if (company.isEmpty()) {
+            return Collections.emptyList(); // Return empty list if company not found
+        }
+
+        return company.get().getDesignations()
+                .stream()
+                .map(designation -> designation.getTitle()) // Adjust based on your model
+                .collect(Collectors.toList());
+    }
+}
     public Company saveCompany(Company company) {
         return companyRepository.save(company);
     }

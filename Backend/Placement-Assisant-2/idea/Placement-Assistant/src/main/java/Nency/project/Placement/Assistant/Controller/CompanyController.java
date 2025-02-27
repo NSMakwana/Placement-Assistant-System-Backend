@@ -89,6 +89,23 @@ public class CompanyController {
         return ResponseEntity.ok(rounds);
     }
 
+    @GetMapping("/{companyName}/designations")
+    public ResponseEntity<List<String>> getCompanyDesignations(@PathVariable String companyName) {
+        logger.info("Fetching designations for company: {}", companyName);
+        
+        Optional<Company> company = companyRepository.findByName(companyName);
+        if (company.isEmpty()) {
+            logger.warn("Company not found: {}", companyName);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        }
+
+        List<String> designations = company.get().getDesignations()
+                .stream()
+                .map(designation -> designation.getTitle()) // Adjust based on your model
+                .toList();
+
+        return ResponseEntity.ok(designations);
+    }
 
 
     // Test the MongoDB connection and get a count of companies
