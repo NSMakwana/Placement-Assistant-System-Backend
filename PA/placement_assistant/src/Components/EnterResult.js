@@ -83,17 +83,7 @@ const EnterResult = ({ selectedCompany,selectedDesignation }) => {
                     <td>{index + 1}</td>
                     <td>{round.round}</td>
                     <td>
-                      <select
-                        value={studentResults[round.round] || ""}
-                        onChange={(e) =>
-                          handleResultChange(round.round, e.target.value)
-                        }
-                      >
-                        <option value="">Select</option>
-                        <option value="Passed">Passed</option>
-                        <option value="Failed">Failed</option>
-                        <option value="Pending">Pending</option>
-                      </select>
+                    <button onClick={handleSubmit}>Enter Results</button>
                     </td>
                   </tr>
                 ))
@@ -104,7 +94,7 @@ const EnterResult = ({ selectedCompany,selectedDesignation }) => {
               )}
             </tbody>
           </table>
-          <button onClick={handleSubmit}>Submit Results</button>
+          
         </div>
       )}
     </div>
