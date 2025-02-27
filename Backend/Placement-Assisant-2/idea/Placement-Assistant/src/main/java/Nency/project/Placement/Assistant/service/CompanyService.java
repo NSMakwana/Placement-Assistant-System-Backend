@@ -58,7 +58,7 @@ public class CompanyService {
                 .map(designation -> designation.getTitle()) // Adjust based on your model
                 .collect(Collectors.toList());
     }
-}
+
     public Company saveCompany(Company company) {
         return companyRepository.save(company);
     }
