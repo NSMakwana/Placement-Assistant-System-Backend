@@ -90,8 +90,10 @@ public class CompanyController {
         return ResponseEntity.ok(rounds);
     }
 
-    @GetMapping("/{companyName}/designations")
-    public ResponseEntity<List<String>> getCompanyDesignations(@PathVariable String companyName) {
+    import java.util.stream.Collectors;
+
+@GetMapping("/{companyName}/designations")
+public ResponseEntity<List<String>> getCompanyDesignations(@PathVariable String companyName) {
     logger.info("Fetching designations for company: {}", companyName);
 
     Optional<Company> company = companyRepository.findByName(companyName);
@@ -102,12 +104,11 @@ public class CompanyController {
 
     List<String> designations = company.get().getDesignations()
             .stream()
-            .map(designation -> designation.getTitle().toString()) // Ensure String type
-            .collect(Collectors.toList());
+            .map(designation -> designation.getTitle() != null ? designation.getTitle() : "Unknown") // Fix: Handle null values
+            .collect(Collectors.toList()); 
 
     return ResponseEntity.ok(designations);
 }
-
 
 
     // Test the MongoDB connection and get a count of companies

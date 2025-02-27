@@ -35,17 +35,18 @@ public class CompanyService {
     public List<Company> getCompaniesByBatch(String batch) {
         return companyRepository.findByBatch(batch);
     }
-    public List<Map<String, String>> getCompanyRounds(String cname) {
-        Optional<Company> company = companyRepository.findByName(cname); // Find company by name
+   public List<String> getCompanyDesignations(String companyName) {
+    Optional<Company> company = companyRepository.findByName(companyName);
 
-
-        return company.map(value -> value.getDesignations()
-                .stream()
-                .flatMap(designation -> designation.getPlacementProcess().stream())
-                .map(process -> Map.of("round", process.getRound())) // Extract only round names
-                .toList()).orElse(Collections.emptyList());
-
+    if (company.isEmpty()) {
+        return Collections.emptyList(); // Return empty list if company not found
     }
+
+    return company.get().getDesignations()
+            .stream()
+            .map(designation -> designation.getTitle() != null ? designation.getTitle() : "Unknown") // Fix null values
+            .collect(Collectors.toList());
+}
     
      public List<String> getCompanyDesignations(String companyName) {
         Optional<Company> company = companyRepository.findByName(companyName);
