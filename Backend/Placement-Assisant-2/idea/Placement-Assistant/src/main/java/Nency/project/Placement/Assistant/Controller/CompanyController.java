@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.stream.Collectors;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,21 +92,22 @@ public class CompanyController {
 
     @GetMapping("/{companyName}/designations")
     public ResponseEntity<List<String>> getCompanyDesignations(@PathVariable String companyName) {
-        logger.info("Fetching designations for company: {}", companyName);
-        
-        Optional<Company> company = companyRepository.findByName(companyName);
-        if (company.isEmpty()) {
-            logger.warn("Company not found: {}", companyName);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-        }
+    logger.info("Fetching designations for company: {}", companyName);
 
-        List<String> designations = company.get().getDesignations()
-                .stream()
-                .map(designation -> designation.getTitle()) // Adjust based on your model
-                .toList();
-
-        return ResponseEntity.ok(designations);
+    Optional<Company> company = companyRepository.findByName(companyName);
+    if (company.isEmpty()) {
+        logger.warn("Company not found: {}", companyName);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
     }
+
+    List<String> designations = company.get().getDesignations()
+            .stream()
+            .map(designation -> designation.getTitle().toString()) // Ensure String type
+            .collect(Collectors.toList());
+
+    return ResponseEntity.ok(designations);
+}
+
 
 
     // Test the MongoDB connection and get a count of companies
