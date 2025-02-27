@@ -6,6 +6,7 @@ const CompanyFilters = ({ onFilter }) => {
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [designation, setDesignation] = useState("");
+  const [selectedCompanyObj, setSelectedCompanyObj] = useState(null);
   const [search, setSearch] = useState("");
 
   // Fetch companies when a batch is selected
@@ -40,6 +41,44 @@ const CompanyFilters = ({ onFilter }) => {
     fetchCompaniesByBatch();
   }, [batch]); // Runs when batch changes
 
+  useEffect(() => {
+    const fetchDesignations = async () => {
+      if (!selectedCompany) {
+        setSelectedCompanyObj(null);
+        setDesignation("");
+        return;
+      }
+
+      // Try to find the company object in the fetched list
+      const companyObj = companies.find((c) => c.name === selectedCompany);
+
+      if (companyObj?.designations) {
+        // If designations exist, use them
+        setSelectedCompanyObj(companyObj);
+      } else {
+        // Otherwise, fetch designations separately
+        try {
+          const response = await fetch(
+            `https://placement-assistant-system.onrender.com/api/companies/${selectedCompany}/designations`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setSelectedCompanyObj({ name: selectedCompany, designations: data });
+          } else {
+            console.error("Failed to fetch designations.");
+            setSelectedCompanyObj(null);
+          }
+        } catch (error) {
+          console.error("Error fetching designations:", error);
+          setSelectedCompanyObj(null);
+        }
+      }
+    };
+
+    fetchDesignations();
+  }, [selectedCompany]);
+
+
   // Handle filter changes
   const handleFilterChange = (filterType, value) => {
     if (filterType === "batch") {
@@ -63,6 +102,7 @@ const CompanyFilters = ({ onFilter }) => {
   const handleClearFilters = () => {
     setBatch("");
     setSelectedCompany("");
+    setSelectedCompanyObj(null);
     setDesignation("");
     setSearch("");
 
@@ -120,17 +160,15 @@ const CompanyFilters = ({ onFilter }) => {
           className="cselect"
           value={designation}
           onChange={(e) => handleFilterChange("designation", e.target.value)}
-          disabled={!selectedCompany}
-          >
-            <option value="">Select</option>
-            {selectedCompany &&
-            companies
-              .find((company) => company.name === selectedCompany)?.designations
-              ?.map((designation, index) => (
-                <option key={index} value={designation}>{designation}</option>
-              ))}
+          disabled={!selectedCompanyObj}
+        >
+          <option value="">Select</option>
+          {selectedCompanyObj?.designations?.map((designation, index) => (
+            <option key={index} value={designation}>{designation}</option>
+          ))}
         </select>
       </div>
+
 
       {/* Search Filter */}
       <div>
