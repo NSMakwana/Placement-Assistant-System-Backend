@@ -4,6 +4,7 @@ import Nency.project.Placement.Assistant.model.Company;
 import Nency.project.Placement.Assistant.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
 
 import java.util.Collections;
 import java.util.List;
