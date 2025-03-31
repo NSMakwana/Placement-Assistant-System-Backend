@@ -1,0 +1,254 @@
+/* General Form Styling */
+.company-form {
+    width: 90%;
+    max-width: 1090px;
+    margin-top: -1;
+    margin-left: 20%;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    height: fit-content;
+    border-radius: 12px;
+    /* border-color: #fafafa; */
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* max-height: 70vh; Limit height to 80% of the viewport height */
+    overflow-y:hidden; /*Enable vertical scrolling*/
+  }
+  
+  /* Form heading styling */
+  .headings {
+    font-size: 17px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-transform:capitalize;
+    background-color: rgb(217, 215, 218);
+    height: 25px;
+    padding: 2px 2px 2px 10px;
+    box-shadow: 2px 2px 0 rgba(160, 158, 158, 0.2);
+    display: flex;
+    justify-content: space-between;
+  }
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+  }
+  .button-container .headings{
+    flex: 1; /* Allow the label to take up available space */
+    text-align: left;
+   
+  }
+  
+  
+  /* Styling for form sections */
+  .form-section {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #292929;
+    text-transform:capitalize;
+    font-weight: 600;
+    margin-left: 10px;
+    /* word-spacing: 2px; */
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="date"],
+  input[type='textarea']
+ {
+    width: 98.5%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    margin-left: 10px;
+  }
+  
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  input[type="date"]:focus,
+  input[type='textarea']:focus
+ {
+    border-color: #008cba;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 140, 186, 0.5);
+  }
+ 
+  /* Styling for designations and placement process */
+  .company-form .designation {
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .company-form .designation .placementProcess {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Section container for designations */
+  .company-form .designation .placementProcess {
+    width: 100%;
+    margin: 0px;
+    background-color: #09a9b8;
+    height: 10px;
+    color: white;
+    border-color: white;
+  }
+  
+  .company-form .designation .placementProcess button:hover {
+    background-color: #388e3c;
+  }
+  
+  /* Remove process and designation buttons */
+  .company-form .designation button[type='button'],
+  .company-form .designation .placementProcess button[type='button'] {
+    background-color: #aa0404;
+    color: white;
+    font-size: 0.9rem;
+    padding: 0px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    height:26px;
+    width:fit-content;
+    margin-left:63%;
+  }
+  .add-designation-btn{
+    background-color: #aa0404;
+    color: white;
+    font-size: 0.9rem;
+    padding: 0px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    height:26px;
+    width:fit-content;
+    margin-top: 10px;
+    
+  }
+  .company-form .designation button[type='button']:hover,
+  .company-form .designation .placementProcess button[type='button']:hover {
+    background-color: #e53935;
+  }
+  
+  /* Align 'Add Round' and 'Remove Round' buttons properly in a single line */
+  .process-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  /* Remove 'Remove Round' and 'Remove Designation' buttons from single line and give them a smaller width */
+  .remove-round-btn,
+  .remove-designation-btn {
+    margin-left: 10px;
+    margin-top: 0;
+    padding: 8px 12px;
+    display: inline-block;
+    width: auto;
+    font-size: 0.9rem;
+  }
+  
+  /* Align 'Remove Round' and 'Remove Designation' buttons with the heading */
+  .placement-process-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Styling for Add Round button */
+  .add-round-btn {
+    background-color: #008cba;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .add-round-btn:hover {
+    background-color: #007b8f;
+  }
+  
+  .add-round-btn,
+  .remove-round-btn {
+    width: auto;
+  }
+  
+  /* Optional: Add space between round details and buttons */
+  .placementProcess .headings {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .placementProcess .headings button {
+    margin-left: 10px;
+  }
+  
+  /* Styling for table in the designations section */
+  table {
+    width: 100%;
+    
+    /* border-collapse: collapse; */
+  }
+  
+  td {
+    padding: 10px;
+    vertical-align: top;
+  }
+  
+  .cname {
+    width: 50%;
+  }
+  
+  .process-table {
+    width: 100%;
+    margin-top: 10px;
+  }
+  .company-form button[type='submit']
+ {
+    background-color: #008cba;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.company-form button[type='submit']:hover
+ {
+    background-color: #007b8f;
+}
+.company-info{
+  border:none;
+}

@@ -1,0 +1,53 @@
+.sidebar {
+  width: 13%;  
+  height: 100vh;
+  background-color:white;
+  color:black;
+  position:fixed;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 5px 0 5px rgba(0, 0, 0, 0.2); /* Horizontal shadow */
+  border-radius: 8px;
+  margin-top:5px;
+  margin-top: 50px;
+}
+.sidebar a{
+  text-decoration: none;
+  color:black
+}
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+
+
+.menu-item {
+    display: flex; /* Aligns items in a row */
+    align-items: center; /* Centers items vertically */
+    margin: 10px 0; /* Adds spacing between items */
+    cursor: pointer; /* Optional: Pointer cursor on hover */
+  }
+  .menu-item a{
+    text-decoration: none;
+    color:black
+  }
+  
+  .menu-item:active{
+    background-color: #f0f0f0; /* Light grey background on click */
+    text-decoration: none;
+    color:black
+  }
+  .menu-icon {
+    width: 20px; /* Icon size */
+    height: 20px;
+    margin-right: 10px; /* Space between icon and text */
+  }
+  
+  .menu-text {
+    font-size:larger;
+    font-weight:500;
+    /* color: white; */
+  }
+
+  
