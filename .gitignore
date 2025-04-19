@@ -26,3 +26,5 @@ yarn-error.log*
 
 /shelf/
 /workspace.xml
+
+src/main/resources/application.properties
