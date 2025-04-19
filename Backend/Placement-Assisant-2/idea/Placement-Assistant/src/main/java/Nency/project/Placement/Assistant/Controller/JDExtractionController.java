@@ -7,28 +7,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin(origins = {"http://localhost:3000","https://placement-assistant-system.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://placement-assistant-system.vercel.app"})
 @RestController
 @RequestMapping("/api/jd")
 public class JDExtractionController {
 
-    public class jdextractioncontroller {
+    private final GeminiExtractionService geminiService;
 
-        private final GeminiExtractionService geminiService;
-
-        public jdextractioncontroller(GeminiExtractionService geminiService) {
-            this.geminiService = geminiService;
-        }
-
-        @PostMapping("/extract-jd")
-        public ResponseEntity<Company> extractCompanyDetails(@RequestParam("file") MultipartFile file) {
-            try {
-                Company companyDetails = geminiService.extractCompanyDetailsFromJD(file);
-                return ResponseEntity.ok(companyDetails);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        }
+    public JDExtractionController(GeminiExtractionService geminiService) {
+        this.geminiService = geminiService;
     }
 
+    @PostMapping("/extract-jd")
+    public ResponseEntity<Company> extractCompanyDetails(@RequestParam("file") MultipartFile file) {
+        try {
+            Company companyDetails = geminiService.extractCompanyDetailsFromJD(file);
+            return ResponseEntity.ok(companyDetails);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
