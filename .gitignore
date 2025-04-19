@@ -28,3 +28,4 @@ yarn-error.log*
 /workspace.xml
 
 src/main/resources/application.properties
+Backend/Placement-Assisant-2/idea/Placement-Assistant/src/main/resources/application.properties

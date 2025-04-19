@@ -7,10 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin(origins = {"http://localhost:3000","https://placement-assistant-system.vercel.app"})
+@RestController
+@RequestMapping("/api/jd")
 public class JDExtractionController {
-    @CrossOrigin(origins = {"http://localhost:3000","https://placement-assistant-system.vercel.app"})
-    @RestController
-    @RequestMapping("/api/jd")
+
     public class jdextractioncontroller {
 
         private final GeminiExtractionService geminiService;
