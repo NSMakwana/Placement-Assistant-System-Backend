@@ -27,4 +27,15 @@ public class JDExtractionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/test-gemini")
+    public ResponseEntity<String> testGemini() {
+        try {
+            String result = geminiService.testSimplePrompt(); // Custom method we'll add below
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Gemini API test failed");
+        }
+    }
+
 }

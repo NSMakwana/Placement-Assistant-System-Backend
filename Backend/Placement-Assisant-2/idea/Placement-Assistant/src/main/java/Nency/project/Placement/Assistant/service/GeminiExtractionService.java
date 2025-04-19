@@ -62,4 +62,34 @@ public class GeminiExtractionService {
         JsonNode root = objectMapper.readTree(response.body());
         return root.get("candidates").get(0).get("content").get("parts").get(0).get("text").asText();
     }
+    public String testSimplePrompt() throws IOException,InterruptedException{
+
+        String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(endpoint))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("""
+                {
+                  "contents": [
+                    {
+                      "parts": [
+                        { "text": "Say hello from Gemini!" }
+                      ]
+                    }
+                  ]
+                }
+            """))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return response.body();
+        } else {
+            throw new IOException("Gemini API error: " + response.statusCode() + " - " + response.body());
+        }
+    }
+
 }
