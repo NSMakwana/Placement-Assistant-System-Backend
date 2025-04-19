@@ -20,7 +20,7 @@ public class JDExtractionController {
             this.geminiService = geminiService;
         }
 
-        @PostMapping("/extract")
+        @PostMapping("/extract-jd")
         public ResponseEntity<Company> extractCompanyDetails(@RequestParam("file") MultipartFile file) {
             try {
                 Company companyDetails = geminiService.extractCompanyDetailsFromJD(file);
