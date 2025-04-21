@@ -1,4 +1,6 @@
-package Nency.project.Placement.Assistant.Controller;//package Nency.project.Placement.Assistant.Controller;
+package Nency.project.Placement.Assistant.Controller;
+
+//package Nency.project.Placement.Assistant.Controller;
 //
 //import Nency.project.Placement.Assistant.model.Company;
 //import Nency.project.Placement.Assistant.service.GeminiExtractionService;
@@ -45,14 +47,11 @@ package Nency.project.Placement.Assistant.Controller;//package Nency.project.Pla
 
 
 import Nency.project.Placement.Assistant.service.GeminiExtractionService;
+//import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -62,12 +61,12 @@ import java.util.Map;
 public class JDExtractionController {
 
     @Autowired
-    private GeminiExtractionService geminiExtractionService;
+    private GeminiExtractionService geminiService;
 
     @PostMapping("/extract-jd")
     public ResponseEntity<Map<String, Object>> extractJobDetails(@RequestParam("file") MultipartFile file) {
         try {
-            Map<String, Object> extractedData = geminiExtractionService.extractDataFromPdf(file);
+            Map<String, Object> extractedData = geminiService.extractDataFromPdf(file);
             return ResponseEntity.ok(extractedData); // Use ResponseEntity.ok() for 200 OK
         } catch (IOException e) {
             System.err.print("Error processing PDF file: " + e.getMessage());
