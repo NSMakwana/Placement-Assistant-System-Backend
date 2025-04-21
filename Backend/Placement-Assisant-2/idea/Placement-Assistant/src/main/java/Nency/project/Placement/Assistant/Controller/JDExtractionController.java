@@ -24,9 +24,11 @@ public class JDExtractionController {
             Company companyDetails = geminiService.extractCompanyDetailsFromJD(file);
             return ResponseEntity.ok(companyDetails);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
     @GetMapping("/test-gemini")
     public ResponseEntity<String> testGemini() {
         try {

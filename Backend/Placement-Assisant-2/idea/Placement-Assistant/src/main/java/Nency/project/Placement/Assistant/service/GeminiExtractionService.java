@@ -87,7 +87,9 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
+            System.err.println("Gemini API Error Response: " + response.body());
             return response.body();
+
         } else {
             throw new IOException("Gemini API error: " + response.statusCode() + " - " + response.body());
         }
