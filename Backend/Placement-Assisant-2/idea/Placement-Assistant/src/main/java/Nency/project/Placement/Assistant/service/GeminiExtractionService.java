@@ -4,7 +4,6 @@ import Nency.project.Placement.Assistant.model.Company;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +40,6 @@ public class GeminiExtractionService {
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(document);
         }
-
     }
 
     private String callGeminiAPI(String prompt) throws IOException, InterruptedException {
@@ -88,7 +86,6 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            System.err.println("Gemini API Error Response: " + response.body());
             return response.body();
 
         } else {
