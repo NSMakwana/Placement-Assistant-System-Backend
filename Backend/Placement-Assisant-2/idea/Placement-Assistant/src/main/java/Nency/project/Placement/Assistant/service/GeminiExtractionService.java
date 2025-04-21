@@ -44,7 +44,7 @@ public class GeminiExtractionService {
     }
 
     private String callGeminiAPI(String prompt) throws IOException, InterruptedException {
-        String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
+        String endpoint = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=" + apiKey;
 
         Map<String, Object> requestBody = Map.of(
                 "contents", List.of(Map.of("parts", List.of(Map.of("text", prompt))))
@@ -64,7 +64,8 @@ public class GeminiExtractionService {
     }
     public String testSimplePrompt() throws IOException,InterruptedException{
 
-        String endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey;
+        String endpoint = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=" + apiKey;
+
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
