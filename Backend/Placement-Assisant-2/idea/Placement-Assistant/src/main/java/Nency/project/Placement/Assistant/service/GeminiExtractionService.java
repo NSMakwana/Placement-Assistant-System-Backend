@@ -1,188 +1,85 @@
 package Nency.project.Placement.Assistant.service;
 
-
-
-import Nency.project.Placement.Assistant.model.Company;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.pdfbox.Loader;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-import org.apache.pdfbox.text.PDFTextStripper;
+import com.google.cloud.vertexai.VertexAI;
+import com.google.cloud.vertexai.api.Content;
+import com.google.cloud.vertexai.api.Part;
+import com.google.cloud.vertexai.api.Blob;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.api.GenerationConfig;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
 
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.multipart.MultipartFile;
 
-
-
 import java.io.IOException;
-
-import java.net.URI;
-
-import java.net.http.HttpClient;
-
-import java.net.http.HttpRequest;
-
-import java.net.http.HttpResponse;
-
-import java.util.List;
-
-import java.util.Map;
-
-
+import java.util.*;
 
 @Service
-
 public class GeminiExtractionService {
 
-    @Value("${GEMINI_API_KEY}")
+    @Value("${google.cloud.project-id}")
+    private String projectId;
 
-    private String apiKey;
+    @Value("${google.cloud.location-id}")
+    private String locationId;
 
+    @Value("${gemini.model-name}")
+    private String modelName; // example: "gemini-pro-vision"
 
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-
-
-    public Company extractCompanyDetailsFromJD(MultipartFile file) throws IOException, InterruptedException {
-
-        String pdfText = extractTextFromPDF(file);
-
-        String prompt = "Extract company placement details from the following text and convert to JSON:\n" + pdfText;
-
-
-
-        String jsonResponse = callGeminiAPI(prompt);
-
-
-
-        return objectMapper.readValue(jsonResponse, Company.class);
-
-    }
-
-
-
-    private String extractTextFromPDF(MultipartFile file) throws IOException {
-
-        try (PDDocument document = Loader.loadPDF(file.getBytes())) {
-
-            PDFTextStripper stripper = new PDFTextStripper();
-
-            return stripper.getText(document);
+    public Map<String, Object> extractDataFromPdf(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file cannot be empty.");
         }
 
-    }
+        byte[] fileBytes = file.getBytes();
 
+        try (VertexAI vertexAI = new VertexAI(projectId, locationId)) {
 
+            GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
-    private String callGeminiAPI(String prompt) throws IOException, InterruptedException {
+            // Build the PDF blob and part
+            Blob blob = Blob.newBuilder()
+                    .setMimeType("application/pdf")
+                    .setData(com.google.protobuf.ByteString.copyFrom(fileBytes))
+                    .build();
 
-        String endpoint = "https://generativelanguage.googleapis.com/v1beta1/models/gemini-1.5-flash:generate_Content?key=" + apiKey;
+            Part part = Part.newBuilder()
+                    .setInlineData(blob)
+                    .build();
 
+            Content content = Content.newBuilder()
+                    .addParts(part)
+                    .build();
 
+            GenerationConfig config = GenerationConfig.newBuilder()
+                    .setMaxOutputTokens(2048)
+                    .build();
 
-        Map<String, Object> requestBody = Map.of(
+            // Prompt + PDF
+            GenerateContentResponse response = model.generateContent(
+                    Content.newBuilder()
+                            .addParts(Part.newBuilder().setText(
+                                    "Extract all the relevant information from this job description PDF to fill out a company details form. " +
+                                            "Include company name, batch (if mentioned), address details (block number, building name, area, landmark, state, city, pincode), " +
+                                            "contact person details (name, designation, email, mobile), designations offered, package, bond details, location for each designation, " +
+                                            "required qualifications for each designation (as a comma-separated list), and the placement process (round number, round name, description for each round). " +
+                                            "Return the information as a JSON object.")
+                            ).addParts(part).build()
+            );
 
-                "contents", List.of(Map.of("parts", List.of(Map.of("text", prompt))))
+            String generatedText = response.getCandidates(0).getContent().getParts(0).getText();
 
-        );
-
-
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-
-                .uri(URI.create(endpoint))
-
-                .header("Content-Type", "application/json")
-
-                .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(requestBody)))
-
-                .build();
-
-
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-
-
-        JsonNode root = objectMapper.readTree(response.body());
-
-        return root.get("candidates").get(0).get("content").get("parts").get(0).get("text").asText();
-
-    }
-
-    public String testSimplePrompt() throws IOException,InterruptedException{
-
-
-
-        String endpoint = "https://generativelanguage.googleapis.com/v1beta1/models/gemini-pro:generateContent?key=" + apiKey;
-
-
-
-
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-
-                .uri(URI.create(endpoint))
-
-                .header("Content-Type", "application/json")
-
-                .POST(HttpRequest.BodyPublishers.ofString("""
-
-        {
-
-         "contents": [
-
-          {
-
-           "parts": [
-
-            { "text": "Say hello from Gemini!" }
-
-           ]
-
-          }
-
-         ]
-
+            // Convert to JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(generatedText, new TypeReference<Map<String, Object>>() {});
+        } catch (JsonProcessingException e) {
+            System.err.println("Failed to parse response: " + e.getMessage());
+            return new HashMap<>();
         }
-
-      """))
-
-                .build();
-
-
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-
-
-        if (response.statusCode() == 200) {
-
-            return response.body();
-
-
-
-        } else {
-
-            throw new IOException("Gemini API error: " + response.statusCode() + " - " + response.body());
-
-        }
-
     }
-
-
-
 }
