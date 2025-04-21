@@ -37,10 +37,11 @@ public class GeminiExtractionService {
     }
 
     private String extractTextFromPDF(MultipartFile file) throws IOException {
-        try (PDDocument document = Loader.loadPDF((RandomAccessRead) file.getInputStream())) {
+        try (PDDocument document = Loader.loadPDF(file.getBytes())) {
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(document);
         }
+    
     }
 
     private String callGeminiAPI(String prompt) throws IOException, InterruptedException {
