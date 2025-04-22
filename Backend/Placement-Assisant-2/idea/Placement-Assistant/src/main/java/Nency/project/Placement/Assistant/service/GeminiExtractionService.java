@@ -85,9 +85,12 @@
 //}
 package Nency.project.Placement.Assistant.service;
 
+
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -101,7 +104,9 @@ import java.util.Map;
 @Service
 public class GeminiExtractionService {
 
-    private static final String API_TOKEN = "YOUR_HF_API_KEY";  // Replace with your actual Hugging Face API key
+    @Value("${jwt.token.secret}")  // Inject the API token from application.properties
+    private String API_TOKEN;
+
     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
 
     // Method to extract text from PDF and send it to Hugging Face
