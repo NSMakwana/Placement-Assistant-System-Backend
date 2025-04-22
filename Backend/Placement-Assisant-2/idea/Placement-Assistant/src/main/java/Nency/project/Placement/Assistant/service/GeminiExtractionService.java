@@ -107,7 +107,8 @@ public class GeminiExtractionService {
     @Value("${jwt.token.secret}")  // Inject the API token from application.properties
     private String API_TOKEN;
 
-    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
+    private static final String ENDPOINT ="https://api-inference.huggingface.co/models/google/flan-t5-large";
+
 
     // Method to extract text from PDF and send it to Hugging Face
     public String extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
