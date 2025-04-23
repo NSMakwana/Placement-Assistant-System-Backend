@@ -124,40 +124,40 @@ public class GeminiExtractionService {
                 Your JSON output format should be exactly like this:
                 return it in **valid JSON format** that matches this structure:
                           {
-                             "name": "[Company Name]",
-                             "batch": "[Target Batch, if mentioned]",
+                             "name": "",
+                             "batch": "",
                              "address": {
-                               "blockNo": "[Block Number, if mentioned]",
-                               "buildingName": "[Building Name, if mentioned]",
-                               "area": "[Area, if mentioned]",
-                               "landmark": "[Landmark, if mentioned]",
-                               "state": "[State, if mentioned]",
-                               "city": "[City, if mentioned]",
-                               "pincode": "[Pincode, if mentioned]"
+                               "blockNo": "",
+                               "buildingName": "",
+                               "area": "",
+                               "landmark": "",
+                               "state": "",
+                               "city": "",
+                               "pincode": ""
                              },
                              "contactPerson": {
-                               "name": "[Contact Person's Name, if mentioned]",
-                               "designation": "[Contact Person's Designation, if mentioned]",
-                               "email": "[Contact Person's Email, if mentioned]",
-                               "mobile": "[Contact Person's Mobile Number, if mentioned]"
+                               "name":"",
+                               "designation":"" ,
+                               "email":"",
+                               "mobile":""
                              },
                              "designations": [
                                {
-                                 "designation": "[Job Designation]",
-                                 "Package": "[Salary Package, if mentioned]",
-                                 "bond": "[Bond Details, if mentioned]",
-                                 "location": "[Job Location, if mentioned]",
-                                 "requiredQualifications": "[List of Required Qualifications]",
+                                 "designation":"",
+                                 "Package":"",
+                                 "bond":"" ,
+                                 "location": ,
+                                 "requiredQualifications":"" ,
                                  "placementProcess": [
                                    {
                                      "roundNumber": 1,
-                                     "round": "[Name of the First Round]",
-                                     "description": "[Description of the First Round, if mentioned]"
+                                     "round":"",
+                                     "description":""
                                    },
                                    {
-                                     "roundNumber": 2,
-                                     "round": "[Name of the Second Round]",
-                                     "description": "[Description of the Second Round, if mentioned]"
+                                     "roundNumber":"" ,
+                                     "round":"",
+                                     "description":""
                                    },
                                    // ... more rounds if applicable
                                  ]
