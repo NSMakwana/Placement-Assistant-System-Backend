@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"http://localhost:3001","http://localhost:3000","https://placement-assistant-system.vercel.app"}, allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3001","http://localhost:3002","http://localhost:3000","https://placement-assistant-system.vercel.app"}, allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/agreements")
 public class AgreementController {

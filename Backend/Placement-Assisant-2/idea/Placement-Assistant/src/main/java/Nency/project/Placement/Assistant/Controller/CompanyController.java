@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"http://localhost:3000","https://placement-assistant-system.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002","https://placement-assistant-system.vercel.app"})
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyController {

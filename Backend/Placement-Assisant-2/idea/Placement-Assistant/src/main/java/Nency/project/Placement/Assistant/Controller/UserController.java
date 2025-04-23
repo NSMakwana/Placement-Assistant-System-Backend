@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = {"http://localhost:3000","https://placement-assistant-system.vercel.app"},allowedHeaders = "*", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002","https://placement-assistant-system.vercel.app"},allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/user")
 

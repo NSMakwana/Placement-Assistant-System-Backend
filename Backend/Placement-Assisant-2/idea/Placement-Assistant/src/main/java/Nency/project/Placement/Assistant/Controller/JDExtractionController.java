@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@CrossOrigin(origins = {"http://localhost:3000", "https://placement-assistant-system.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002", "https://placement-assistant-system.vercel.app"})
 @RestController
 @RequestMapping("/api/jd")
 public class JDExtractionController {
