@@ -208,15 +208,22 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
         ObjectMapper mapper = new ObjectMapper();
         // Parse the response JSON array: [{"generated_text": "..."}]
         var root = mapper.readTree(rawResponse);
-        String generatedText = root.get(0).get("generated_text").asText();
 
-        // Extract JSON substring from the generated text
-        int firstBrace = generatedText.indexOf('{');
-        int lastBrace = generatedText.lastIndexOf('}');
-        if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
-            throw new IOException("No valid JSON found in Hugging Face response.");
+        // Check if the response has the correct structure
+        if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
+            String generatedText = root.get(0).get("generated_text").asText();
+
+            // Extract JSON substring from the generated text
+            int firstBrace = generatedText.indexOf('{');
+            int lastBrace = generatedText.lastIndexOf('}');
+            if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
+                throw new IOException("No valid JSON found in Hugging Face response.");
+            }
+            return generatedText.substring(firstBrace, lastBrace + 1);
+        } else {
+            throw new IOException("Unexpected response structure: " + rawResponse);
         }
-        return generatedText.substring(firstBrace, lastBrace + 1);
     }
+
 
 }
