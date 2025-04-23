@@ -111,10 +111,15 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
 
 
 
-    public String extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
+    public Map<String, Object> extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
-        return sendToHuggingFace(prompt);
+        String rawResponse = sendToHuggingFace(prompt);
+        String json = extractJsonFromHuggingFaceResponse(rawResponse);
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
     }
+
 
     private String buildPrompt(String jdText) {
       return """
@@ -190,5 +195,21 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
         }
+
     }
+    private String extractJsonFromHuggingFaceResponse(String rawResponse) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        // Parse the response JSON array: [{"generated_text": "..."}]
+        var root = mapper.readTree(rawResponse);
+        String generatedText = root.get(0).get("generated_text").asText();
+
+        // Extract JSON substring from the generated text
+        int firstBrace = generatedText.indexOf('{');
+        int lastBrace = generatedText.lastIndexOf('}');
+        if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
+            throw new IOException("No valid JSON found in Hugging Face response.");
+        }
+        return generatedText.substring(firstBrace, lastBrace + 1);
+    }
+
 }
