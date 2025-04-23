@@ -170,6 +170,7 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
+
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("inputs", prompt);
         String jsonBody = mapper.writeValueAsString(requestBody);
@@ -184,13 +185,20 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            String jsonPart = response.body()
-                    .replaceAll("^\\[\\{\"generated_text\":\\s*\"", "")
-                    .replaceAll("\"\\}\\]$", "")
-                    .trim();
+            String fullResponse = response.body();
 
-            System.out.println("Cleaned JSON Part: " + jsonPart);
-            return jsonPart;
+            // Extract only the JSON part — from the first "{" to the last "}"
+            int jsonStart = fullResponse.indexOf('{');
+            int jsonEnd = fullResponse.lastIndexOf('}') + 1;
+
+            if (jsonStart == -1 || jsonEnd == -1) {
+                throw new IOException("Could not find valid JSON in response.");
+            }
+
+            String cleanedJson = fullResponse.substring(jsonStart, jsonEnd);
+
+            System.out.println("Extracted JSON: " + cleanedJson);
+            return cleanedJson;
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
         }
