@@ -90,6 +90,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -104,8 +105,7 @@ public class GeminiExtractionService {
     @Value("${jwt.token.secret}") // Inject the Hugging Face API token
     private String API_TOKEN;
 
-
-    private static final String ENDPOINT="https://api-inference.huggingface.co/models/google/flan-t5-large";
+    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-t5-large";
 
     public String extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
@@ -113,42 +113,23 @@ public class GeminiExtractionService {
     }
 
     private String buildPrompt(String jdText) {
-        return "Extract the following information from this job description and return it as a JSON object. " +
-                "If a field is not present, leave its value as null or an empty string. " +
+        return "You are a job description extraction assistant. Your task is to extract the following fields from the provided job description:\n" +
+                "1. Company Name\n" +
+                "2. Eligibility Criteria (Education Qualification and Academics)\n" +
+                "3. Interview Process\n" +
+                "4. Positions (Position Name and Number)\n\n" +
                 "The JSON structure should be:\n" +
                 "{\n" +
-                "  \"name\": \"\",\n" +
-                "  \"batch\": \"\",\n" +
-                "  \"address\": {\n" +
-                "    \"blockNo\": \"\",\n" +
-                "    \"buildingName\": \"\",\n" +
-                "    \"area\": \"\",\n" +
-                "    \"landmark\": \"\",\n" +
-                "    \"state\": \"\",\n" +
-                "    \"city\": \"\",\n" +
-                "    \"pincode\": \"\"\n" +
+                "  \"companyName\": \"\",\n" +
+                "  \"eligibilityCriteria\": {\n" +
+                "    \"education\": \"\",\n" +
+                "    \"academicPercent\": \"\"\n" +
                 "  },\n" +
-                "  \"contactPerson\": {\n" +
-                "    \"name\": \"\",\n" +
-                "    \"designation\": \"\",\n" +
-                "    \"email\": \"\",\n" +
-                "    \"mobile\": \"\"\n" +
-                "  },\n" +
-                "  \"designations\": [\n" +
-                "    {\n" +
-                "      \"designation\": \"\",\n" +
-                "      \"Package\": \"\",\n" +
-                "      \"bond\": \"\",\n" +
-                "      \"location\": \"\",\n" +
-                "      \"RequiredQualifications\": [],\n" +
-                "      \"placementProcess\": [\n" +
-                "        {\n" +
-                "          \"roundNumber\": \"\",\n" +
-                "          \"round\": \"\",\n" +
-                "          \"description\": \"\"\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
+                "  \"interviewProcess\": [\n" +
+                "    \"\", \"\", \"\"\n" +
+                "  ],\n" +
+                "  \"positions\": [\n" +
+                "    { \"position\": \"\", \"numberOfPositions\": \"\" }\n" +
                 "  ]\n" +
                 "}\n\n" +
                 "Job Description:\n" + jdText;
@@ -171,6 +152,8 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
+            // Log raw response for debugging
+            System.out.println("Hugging Face Response: " + response.body());
             return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());

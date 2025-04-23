@@ -5,9 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 
-@CrossOrigin(origins = {"http://localhost:3000","https://placement-assistant-system.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://placement-assistant-system.vercel.app"})
 @RestController
 @RequestMapping("/api/jd")
 public class JDExtractionController {
@@ -22,7 +23,6 @@ public class JDExtractionController {
     public ResponseEntity<?> parseJD(@RequestParam("file") MultipartFile file) {
         try {
             // Extract text from PDF
-            // **Important:** You still need to extract the text from the PDF before sending it to the Hugging Face model.
             String jdText = extractTextFromPDF(file);
 
             // Call the service method to get the JSON string response from Hugging Face
