@@ -106,7 +106,8 @@ public class GeminiExtractionService {
     private String API_TOKEN;
 
 //    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
-private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-ul2";
+//private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-ul2";
+private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-t5-large";
 
 
 
