@@ -85,14 +85,11 @@
 //}
 package Nency.project.Placement.Assistant.service;
 
-
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -104,37 +101,66 @@ import java.util.Map;
 @Service
 public class GeminiExtractionService {
 
-    @Value("${jwt.token.secret}")  // Inject the API token from application.properties
+    @Value("${huggingface.api.token}") // Inject the Hugging Face API token
     private String API_TOKEN;
 
-    private static final String ENDPOINT ="https://api-inference.huggingface.co/models/google/flan-t5-large";
+    @Value("${huggingface.model.endpoint}")
+    private String ENDPOINT; // e.g., "https://api-inference.huggingface.co/models/google/flan-t5-large"
 
-
-    // Method to extract text from PDF and send it to Hugging Face
     public String extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
-        // Build the prompt based on the job description text
         String prompt = buildPrompt(jdText);
-
-        // Send the prompt to Hugging Face API and get the response
         return sendToHuggingFace(prompt);
     }
 
-    // Method to build the prompt
     private String buildPrompt(String jdText) {
-        return "Extract the following fields from this job description and return as JSON:\n"
-                + "{ \"name\": \"\", \"batch\": \"\", \"address\": { \"blockNo\": \"\", \"buildingName\": \"\", \"area\": \"\", \"landmark\": \"\", \"state\": \"\", \"city\": \"\", \"pincode\": \"\" },"
-                + " \"contactPerson\": { \"name\": \"\", \"designation\": \"\", \"email\": \"\", \"mobile\": \"\" },"
-                + " \"designations\": [ { \"designation\": \"\", \"Package\": \"\", \"bond\": \"\", \"location\": \"\", \"RequiredQualifications\": [],"
-                + " \"placementProcess\": [ { \"roundNumber\": \"\", \"round\": \"\", \"description\": \"\" } ] } ] }\n\n"
-                + "Job Description:\n" + jdText;
+        return "Extract the following information from this job description and return it as a JSON object. " +
+                "If a field is not present, leave its value as null or an empty string. " +
+                "The JSON structure should be:\n" +
+                "{\n" +
+                "  \"name\": \"\",\n" +
+                "  \"batch\": \"\",\n" +
+                "  \"address\": {\n" +
+                "    \"blockNo\": \"\",\n" +
+                "    \"buildingName\": \"\",\n" +
+                "    \"area\": \"\",\n" +
+                "    \"landmark\": \"\",\n" +
+                "    \"state\": \"\",\n" +
+                "    \"city\": \"\",\n" +
+                "    \"pincode\": \"\"\n" +
+                "  },\n" +
+                "  \"contactPerson\": {\n" +
+                "    \"name\": \"\",\n" +
+                "    \"designation\": \"\",\n" +
+                "    \"email\": \"\",\n" +
+                "    \"mobile\": \"\"\n" +
+                "  },\n" +
+                "  \"designations\": [\n" +
+                "    {\n" +
+                "      \"designation\": \"\",\n" +
+                "      \"Package\": \"\",\n" +
+                "      \"bond\": \"\",\n" +
+                "      \"location\": \"\",\n" +
+                "      \"RequiredQualifications\": [],\n" +
+                "      \"placementProcess\": [\n" +
+                "        {\n" +
+                "          \"roundNumber\": \"\",\n" +
+                "          \"round\": \"\",\n" +
+                "          \"description\": \"\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}\n\n" +
+                "Job Description:\n" + jdText;
     }
 
-    // Method to send the request to Hugging Face API and retrieve the response
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("inputs", prompt);
+        String jsonBody = mapper.writeValueAsString(requestBody);
 
-        // Create the HTTP request
-        String jsonBody = buildRequestBody(prompt);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(ENDPOINT))
                 .header("Authorization", "Bearer " + API_TOKEN)
@@ -142,24 +168,12 @@ public class GeminiExtractionService {
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
-        // Send the request and get the response
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // If the request is successful, return the body, otherwise throw an exception
         if (response.statusCode() == 200) {
             return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
         }
-    }
-
-    // Method to build the JSON body for the API request
-    private String buildRequestBody(String prompt) throws IOException {
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("inputs", prompt);
-
-        // Use ObjectMapper to convert the map into a JSON string
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(requestBody);
     }
 }

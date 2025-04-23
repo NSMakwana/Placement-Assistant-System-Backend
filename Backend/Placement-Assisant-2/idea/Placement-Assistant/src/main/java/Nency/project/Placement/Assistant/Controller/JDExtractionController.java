@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 @CrossOrigin(origins = {"http://localhost:3000","https://placement-assistant-system.vercel.app"})
 @RestController
@@ -13,31 +14,43 @@ public class JDExtractionController {
 
     private final GeminiExtractionService geminiExtractionService;
 
-    // Inject the service
     public JDExtractionController(GeminiExtractionService geminiExtractionService) {
         this.geminiExtractionService = geminiExtractionService;
     }
 
-    // POST endpoint to extract details from job description
     @PostMapping("/extract-jd")
     public ResponseEntity<?> parseJD(@RequestParam("file") MultipartFile file) {
         try {
             // Extract text from PDF
-            String jdText = extractTextFromPDF(file); // Replace with your actual PDF extraction logic
+            // **Important:** You still need to extract the text from the PDF before sending it to the Hugging Face model.
+            String jdText = extractTextFromPDF(file);
 
-            // Call the service method to extract company details from job description
+            // Call the service method to get the JSON string response from Hugging Face
             String hfResponse = geminiExtractionService.extractCompanyDetailsFromJD(jdText);
 
-            // Return the response back to the frontend
+            // Return the JSON string to the frontend
             return ResponseEntity.ok(hfResponse);
-        } catch (Exception e) {
+
+        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing file: " + e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing request: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error extracting data: " + e.getMessage());
         }
     }
 
-    // Method to extract text from PDF file (you can replace this with your actual PDF extraction logic)
-    private String extractTextFromPDF(MultipartFile file) {
-        // For now, this is just a placeholder. Implement your PDF extraction logic here.
-        return "Sample job description text extracted from PDF file.";
+    private String extractTextFromPDF(MultipartFile file) throws IOException {
+        org.apache.pdfbox.pdmodel.PDDocument document = null;
+        try {
+            document = org.apache.pdfbox.pdmodel.PDDocument.load(file.getInputStream());
+            org.apache.pdfbox.text.PDFTextStripper stripper = new org.apache.pdfbox.text.PDFTextStripper();
+            return stripper.getText(document);
+        } finally {
+            if (document != null) {
+                document.close();
+            }
+        }
     }
 }
