@@ -105,8 +105,10 @@ public class GeminiExtractionService {
     @Value("${jwt.token.secret}") // Inject the Hugging Face API token
     private String API_TOKEN;
 
-    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
-//      private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/byt5-small";
+//    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
+//    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/byt5-small";
+     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/mt5-large";
+
     public Map<String, Object> extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
         String rawResponse = sendToHuggingFace(prompt);
