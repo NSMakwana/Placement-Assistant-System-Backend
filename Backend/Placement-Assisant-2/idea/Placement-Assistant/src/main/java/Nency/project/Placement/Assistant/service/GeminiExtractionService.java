@@ -119,11 +119,12 @@ public class GeminiExtractionService {
     private String buildPrompt(String jdText) {
         return """
                 You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD).
-            Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
-            Only use actual values from the JD. If a piece of information is not mentioned, the corresponding field's value should be null.
-            For 'requiredQualifications' and 'placementProcess', extract all mentioned items into JSON arrays.
+                Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
+                Only use actual values from the JD. If a piece of information is not mentioned, the corresponding field's value should be null.
+                For 'requiredQualifications' and 'placementProcess', extract all mentioned items into JSON arrays.
+                **Don't set val as it is given in the structure.
 
-            Return the information in **strict and valid JSON format** that adheres to the following structure:
+            Return the information in nd valid JSON format** that adheres to the following structure:
             {
                "name": null,
                "batch": null,
