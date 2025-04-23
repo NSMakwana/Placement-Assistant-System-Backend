@@ -120,7 +120,7 @@ public class GeminiExtractionService {
         return """
             You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD).
             Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
-            **Only use actual values from the JD**. If a piece of information is not mentioned, the corresponding field's value should be null or an empty list/object as appropriate.
+            **use actual values from the JD**. If a piece of information is not mentioned, the corresponding field's value should be null or an empty list/object as appropriate.
 
             Return the information in **valid JSON format** that adheres to the following structure. Extract and fill in the actual values from the JD for each field. If a value is not found, use null (or [] for lists, {} for objects).
 
