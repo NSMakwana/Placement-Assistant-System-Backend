@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002", "https://placement-assistant-system.vercel.app"})
 @RestController
@@ -26,7 +27,7 @@ public class JDExtractionController {
             String jdText = extractTextFromPDF(file);
 
             // Call the service method to get the JSON string response from Hugging Face
-            String hfResponse = geminiExtractionService.extractCompanyDetailsFromJD(jdText);
+            Map<String, Object> hfResponse = geminiExtractionService.extractCompanyDetailsFromJD(jdText);
 
             // Return the JSON string to the frontend
             return ResponseEntity.ok(hfResponse);
