@@ -118,62 +118,56 @@ public class GeminiExtractionService {
 
     private String buildPrompt(String jdText) {
         return """
-                You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD)
-                Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
-                Only use actual values from the JD. Do NOT use placeholders or template texts like "[Company Name]" or "[Job Designation]".
-                Your JSON output format should be exactly like this:
-                return it in **valid JSON format** that matches this structure:
-                          {
-                             "name": "",
-                             "batch": "",
-                             "address": {
-                               "blockNo": "",
-                               "buildingName": "",
-                               "area": "",
-                               "landmark": "",
-                               "state": "",
-                               "city": "",
-                               "pincode": ""
-                             },
-                             "contactPerson": {
-                               "name":"",
-                               "designation":"" ,
-                               "email":"",
-                               "mobile":""
-                             },
-                             "designations": [
-                               {
-                                 "designation":"",
-                                 "Package":"",
-                                 "bond":"" ,
-                                 "location": ,
-                                 "requiredQualifications":"" ,
-                                 "placementProcess": [
-                                   {
-                                     "roundNumber": 1,
-                                     "round":"",
-                                     "description":""
-                                   },
-                                   {
-                                     "roundNumber":"" ,
-                                     "round":"",
-                                     "description":""
-                                   },
-                                   // ... more rounds if applicable
-                                 ]
-                               },
-                               // ... more designations if applicable
-                             ]
-                           }
-               
-                           If a piece of information is not mentioned, leave the corresponding field empty (e.g., ""). For requiredQualifications and placementProcess, extract all mentioned items into lists.
-                           Do not include any comments such as // or /* */ in the JSON.
-                           Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
-               
-                           Here is the job description (JD):""" + jdText;
+                You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD).
+            Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
+            Only use actual values from the JD. If a piece of information is not mentioned, the corresponding field's value should be null.
+            For 'requiredQualifications' and 'placementProcess', extract all mentioned items into JSON arrays.
 
+            Return the information in **strict and valid JSON format** that adheres to the following structure:
+            {
+               "name": null,
+               "batch": null,
+               "address": {
+                 "blockNo": null,
+                 "buildingName": null,
+                 "area": null,
+                 "landmark": null,
+                 "state": null,
+                 "city": null,
+                 "pincode": null
+               },
+               "contactPerson": {
+                 "name": null,
+                 "designation": null,
+                 "email": null,
+                 "mobile": null
+               },
+               "designations": [
+                 {
+                   "designation": null,
+                   "Package": null,
+                   "bond": null,
+                   "location": null,
+                   "requiredQualifications": [],
+                   "placementProcess": [
+                     {
+                       "roundNumber": 1,
+                       "round": null,
+                       "description": null
+                     }
+                     // ... more rounds if applicable
+                   ]
+                 }
+                 // ... more designations if applicable
+               ]
+             }
+
+             Here is the job description (JD):
+            """ + jdText + """
+
+            Ensure the JSON response is syntactically correct and directly parsable by a JSON parser. Do not include any extra text, explanations, or markdown formatting. Start your response directly with the JSON object '{'. If a field has no value in the JD, its value in the JSON should be null (or an empty array for lists).
+            """;
     }
-
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
