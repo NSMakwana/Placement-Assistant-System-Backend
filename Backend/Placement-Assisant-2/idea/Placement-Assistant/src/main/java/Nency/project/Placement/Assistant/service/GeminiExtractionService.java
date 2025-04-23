@@ -119,7 +119,7 @@ public class GeminiExtractionService {
     private String buildPrompt(String jdText) {
         return """
                 You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD) and return it in **valid JSON format** that matches this structure:
-                
+
                 {
                   "name": "",
                   "batch": "",
@@ -155,9 +155,9 @@ public class GeminiExtractionService {
                     }
                   ]
                 }
-                
+
                  Only return valid JSON. Do not include explanations, notes, or markdown formatting. Start your response with `{`.
-                
+
                 Here is the job description (JD):
                 """ + jdText;
     }
@@ -180,20 +180,7 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            String fullResponse = response.body();
-
-            // Extract only the JSON part — from the first "{" to the last "}"
-            int jsonStart = fullResponse.indexOf('{');
-            int jsonEnd = fullResponse.lastIndexOf('}') + 1;
-
-            if (jsonStart == -1 || jsonEnd == -1) {
-                throw new IOException("Could not find valid JSON in response.");
-            }
-
-            String cleanedJson = fullResponse.substring(jsonStart, jsonEnd);
-
-            System.out.println("Extracted JSON: " + cleanedJson);
-            return cleanedJson;
+            return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
         }
