@@ -105,11 +105,7 @@ public class GeminiExtractionService {
     @Value("${jwt.token.secret}") // Inject the Hugging Face API token
     private String API_TOKEN;
 
-//    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
-//private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-ul2";
-private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
-
-
+    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
 
     public Map<String, Object> extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
@@ -120,52 +116,51 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
         return mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
     }
 
-
     private String buildPrompt(String jdText) {
-      return """
-        You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD) and return it in **valid JSON format** that matches this structure:
-        
-        {
-          "name": "",
-          "batch": "",
-          "address": {
-            "blockNo": "",
-            "buildingName": "",
-            "area": "",
-            "landmark": "",
-            "state": "",
-            "city": "",
-            "pincode": ""
-          },
-          "contactPerson": {
-            "name": "",
-            "designation": "",
-            "email": "",
-            "mobile": ""
-          },
-          "designations": [
-            {
-              "designation": "",
-              "Package": "",
-              "bond": "",
-              "location": "",
-              "requiredQualifications": [],
-              "placementProcess": [
+        return """
+                You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD) and return it in **valid JSON format** that matches this structure:
+                
                 {
-                  "roundNumber": 1,
-                  "round": "",
-                  "description": ""
+                  "name": "",
+                  "batch": "",
+                  "address": {
+                    "blockNo": "",
+                    "buildingName": "",
+                    "area": "",
+                    "landmark": "",
+                    "state": "",
+                    "city": "",
+                    "pincode": ""
+                  },
+                  "contactPerson": {
+                    "name": "",
+                    "designation": "",
+                    "email": "",
+                    "mobile": ""
+                  },
+                  "designations": [
+                    {
+                      "designation": "",
+                      "Package": "",
+                      "bond": "",
+                      "location": "",
+                      "requiredQualifications": [],
+                      "placementProcess": [
+                        {
+                          "roundNumber": 1,
+                          "round": "",
+                          "description": ""
+                        }
+                      ]
+                    }
+                  ]
                 }
-              ]
-            }
-          ]
-        }
-        
-         Only return valid JSON. Do not include explanations, notes, or markdown formatting. Start your response with `{`.
-        
-        Here is the job description (JD):
-        """ + jdText;
-        }
+                
+                 Only return valid JSON. Do not include explanations, notes, or markdown formatting. Start your response with `{`.
+                
+                Here is the job description (JD):
+                """ + jdText;
+    }
 
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
@@ -224,6 +219,4 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
             throw new IOException("Unexpected response structure: " + rawResponse);
         }
     }
-
-
 }
