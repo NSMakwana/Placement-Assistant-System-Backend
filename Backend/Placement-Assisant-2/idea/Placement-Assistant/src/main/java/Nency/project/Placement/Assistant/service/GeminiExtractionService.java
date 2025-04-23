@@ -101,11 +101,11 @@ import java.util.Map;
 @Service
 public class GeminiExtractionService {
 
-    @Value("${huggingface.api.token}") // Inject the Hugging Face API token
+    @Value("${jwt.token.secret}") // Inject the Hugging Face API token
     private String API_TOKEN;
 
-    @Value("${huggingface.model.endpoint}")
-    private String ENDPOINT; // e.g., "https://api-inference.huggingface.co/models/google/flan-t5-large"
+
+    private static final String ENDPOINT="https://api-inference.huggingface.co/models/google/flan-t5-large";
 
     public String extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
