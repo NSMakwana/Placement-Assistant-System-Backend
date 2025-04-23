@@ -166,8 +166,7 @@ public class GeminiExtractionService {
                            Do not include any comments such as // or /* */ in the JSON.
                            Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
                
-                           Here is the job description (JD):
-                           """ + jdText;
+                           Here is the job description (JD):""" + jdText;
 
     }
 
@@ -208,13 +207,19 @@ public class GeminiExtractionService {
                 throw new IOException("No valid JSON found in Hugging Face response.");
             }
 
-            // Extract and clean JSON
             String extractedJson = generatedText.substring(firstBrace, lastBrace + 1);
 
 
-            String cleanedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
+            //  Remove JavaScript-style comments
+            extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
 
-            return cleanedJson;
+            // Remove trailing commas before closing brackets or braces
+            extractedJson = extractedJson.replaceAll(",(\\s*[}\\]])", "$1");
+
+            // Remove stray closing brackets
+            extractedJson = extractedJson.replaceAll("\\[\\s*\\]", "[]");
+
+            return extractedJson;
         } else {
             throw new IOException("Unexpected response structure: " + rawResponse);
         }
