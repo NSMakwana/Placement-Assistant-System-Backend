@@ -118,54 +118,62 @@ public class GeminiExtractionService {
 
     private String buildPrompt(String jdText) {
         return """
-            You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD).
-            Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
-            **use actual values from the JD**. If a piece of information is not mentioned, the corresponding field's value should be null or an empty list/object as appropriate.
+                You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD)
+                Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
+                **Use actual values from the JD*.* **Do NOT use placeholders or template texts like "[Company Name]" or "[Job Designation]".**
+                Your JSON output format should be exactly like this:
+                return it in **valid JSON format** that matches this structure:
+                          {
+                             "name": "[Company Name]",
+                             "batch": "[Target Batch, if mentioned]",
+                             "address": {
+                               "blockNo": "[Block Number, if mentioned]",
+                               "buildingName": "[Building Name, if mentioned]",
+                               "area": "[Area, if mentioned]",
+                               "landmark": "[Landmark, if mentioned]",
+                               "state": "[State, if mentioned]",
+                               "city": "[City, if mentioned]",
+                               "pincode": "[Pincode, if mentioned]"
+                             },
+                             "contactPerson": {
+                               "name": "[Contact Person's Name, if mentioned]",
+                               "designation": "[Contact Person's Designation, if mentioned]",
+                               "email": "[Contact Person's Email, if mentioned]",
+                               "mobile": "[Contact Person's Mobile Number, if mentioned]"
+                             },
+                             "designations": [
+                               {
+                                 "designation": "[Job Designation]",
+                                 "Package": "[Salary Package, if mentioned]",
+                                 "bond": "[Bond Details, if mentioned]",
+                                 "location": "[Job Location, if mentioned]",
+                                 "requiredQualifications": "[List of Required Qualifications]",
+                                 "placementProcess": [
+                                   {
+                                     "roundNumber": 1,
+                                     "round": "[Name of the First Round]",
+                                     "description": "[Description of the First Round, if mentioned]"
+                                   },
+                                   {
+                                     "roundNumber": 2,
+                                     "round": "[Name of the Second Round]",
+                                     "description": "[Description of the Second Round, if mentioned]"
+                                   },
+                                   // ... more rounds if applicable
+                                 ]
+                               },
+                               // ... more designations if applicable
+                             ]
+                           }
+               
+                           Extract the relevant information from the job description and fill in the JSON structure. If a piece of information is not mentioned, leave the corresponding field empty (e.g., ""). For requiredQualifications and placementProcess, extract all mentioned items into lists.
+                           Do not include any comments such as // or /* */ in the JSON.
+                           Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
+               
+                           Here is the job description (JD):""" + jdText;
 
-            Return the information in **valid JSON format** that adheres to the following structure. Extract and fill in the actual values from the JD for each field. If a value is not found, use null (or [] for lists, {} for objects).
-
-            {
-               "name": null,
-               "batch": null,
-               "address": {
-                 "blockNo": null,
-                 "buildingName": null,
-                 "area": null,
-                 "landmark": null,
-                 "state": null,
-                 "city": null,
-                 "pincode": null
-               },
-               "contactPerson": {
-                 "name": null,
-                 "designation": null,
-                 "email": null,
-                 "mobile": null
-               },
-               "designations": [
-                 {
-                   "designation": null,
-                   "Package": null,
-                   "bond": null,
-                   "location": null,
-                   "requiredQualifications": [],
-                   "placementProcess": [
-                     {
-                       "roundNumber": 1,
-                       "round": null,
-                       "description": null
-                     }
-                     ]
-                 }
-               ]
-             }
-
-             Here is the job description (JD):
-            """ + jdText + """
-
-            Ensure the JSON response is syntactically correct and directly parsable by a JSON parser. Do not include any extra text, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
-            """;
     }
+
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
@@ -184,7 +192,6 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            System.out.print(jsonBody);
             return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
