@@ -120,46 +120,58 @@ public class GeminiExtractionService {
         return """
                 You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD) and return it in **valid JSON format** that matches this structure:
 
-                {
-                  "name": "",
-                  "batch": "",
-                  "address": {
-                    "blockNo": "",
-                    "buildingName": "",
-                    "area": "",
-                    "landmark": "",
-                    "state": "",
-                    "city": "",
-                    "pincode": ""
-                  },
-                  "contactPerson": {
-                    "name": "",
-                    "designation": "",
-                    "email": "",
-                    "mobile": ""
-                  },
-                  "designations": [
-                    {
-                      "designation": "",
-                      "Package": "",
-                      "bond": "",
-                      "location": "",
-                      "requiredQualifications": [],
-                      "placementProcess": [
-                        {
-                          "roundNumber": 1,
-                          "round": "",
-                          "description": ""
-                        }
-                      ]
-                    }
-                  ]
-                }
+             
+                          
+                           {
+                             "name": "[Company Name]",
+                             "batch": "[Target Batch, if mentioned]",
+                             "address": {
+                               "blockNo": "[Block Number, if mentioned]",
+                               "buildingName": "[Building Name, if mentioned]",
+                               "area": "[Area, if mentioned]",
+                               "landmark": "[Landmark, if mentioned]",
+                               "state": "[State, if mentioned]",
+                               "city": "[City, if mentioned]",
+                               "pincode": "[Pincode, if mentioned]"
+                             },
+                             "contactPerson": {
+                               "name": "[Contact Person's Name, if mentioned]",
+                               "designation": "[Contact Person's Designation, if mentioned]",
+                               "email": "[Contact Person's Email, if mentioned]",
+                               "mobile": "[Contact Person's Mobile Number, if mentioned]"
+                             },
+                             "designations": [
+                               {
+                                 "designation": "[Job Designation]",
+                                 "Package": "[Salary Package, if mentioned]",
+                                 "bond": "[Bond Details, if mentioned]",
+                                 "location": "[Job Location, if mentioned]",
+                                 "requiredQualifications": "[List of Required Qualifications]",
+                                 "placementProcess": [
+                                   {
+                                     "roundNumber": 1,
+                                     "round": "[Name of the First Round]",
+                                     "description": "[Description of the First Round, if mentioned]"
+                                   },
+                                   {
+                                     "roundNumber": 2,
+                                     "round": "[Name of the Second Round]",
+                                     "description": "[Description of the Second Round, if mentioned]"
+                                   },
+                                   // ... more rounds if applicable
+                                 ]
+                               },
+                               // ... more designations if applicable
+                             ]
+                           }
+               
+                           Extract the relevant information from the job description and fill in the JSON structure. If a piece of information is not mentioned, leave the corresponding field empty (e.g., ""). For requiredQualifications and placementProcess, extract all mentioned items into lists.
+               
+                           Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
+               
+                           Here is the job description (JD):
+                           """ + jdText;
 
-                 Only return valid JSON. Do not include explanations, notes, or markdown formatting. Start your response with `{`.
-
-                Here is the job description (JD):
-                """ + jdText;
     }
 
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
