@@ -191,7 +191,7 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
                     .replaceAll("\"\\}\\]$", "")
                     .trim();
 
-            return response.body();
+            return jsonPart;
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
         }
