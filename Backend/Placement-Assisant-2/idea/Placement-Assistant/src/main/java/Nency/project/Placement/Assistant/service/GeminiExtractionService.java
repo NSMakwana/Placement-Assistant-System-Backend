@@ -105,7 +105,8 @@ public class GeminiExtractionService {
     @Value("${jwt.token.secret}") // Inject the Hugging Face API token
     private String API_TOKEN;
 
-    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-t5-large";
+    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1";
+
 
     public String extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
@@ -113,27 +114,52 @@ public class GeminiExtractionService {
     }
 
     private String buildPrompt(String jdText) {
-        return "Extract the following fields from the job description and return them in strict JSON format. Start your response with '{' and do not include any explanation.\n\n" +
-                "The structure should be:\n" +
-                "{\n" +
-                "  \"companyName\": \"\",\n" +
-                "  \"eligibilityCriteria\": {\n" +
-                "    \"education\": \"\",\n" +
-                "    \"academicPercent\": \"\"\n" +
-                "  },\n" +
-                "  \"interviewProcess\": [\"\", \"\", \"\"],\n" +
-                "  \"positions\": [\n" +
-                "    { \"position\": \"MERN/MEAN Interns\" },\n" +
-                "    { \"position\": \"Java Interns\" },\n" +
-                "    { \"position\": \"Odoo/Python Interns\" },\n" +
-                "    { \"position\": \"DevOps Interns\" },\n" +
-                "    { \"position\": \"AI/ML Interns\" },\n" +
-                "    { \"position\": \"RPA Interns\" }\n" +
-                "  ]\n" +
-                "}\n\n" +
-                "Here is the job description:\n" + jdText;
-    }
-    private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
+      return """
+        You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD) and return it in **valid JSON format** that matches this structure:
+        
+        {
+          "name": "",
+          "batch": "",
+          "address": {
+            "blockNo": "",
+            "buildingName": "",
+            "area": "",
+            "landmark": "",
+            "state": "",
+            "city": "",
+            "pincode": ""
+          },
+          "contactPerson": {
+            "name": "",
+            "designation": "",
+            "email": "",
+            "mobile": ""
+          },
+          "designations": [
+            {
+              "designation": "",
+              "Package": "",
+              "bond": "",
+              "location": "",
+              "requiredQualifications": [],
+              "placementProcess": [
+                {
+                  "roundNumber": 1,
+                  "round": "",
+                  "description": ""
+                }
+              ]
+            }
+          ]
+        }
+        
+        ⚠️ Only return valid JSON. Do not include explanations, notes, or markdown formatting. Start your response with `{`.
+        
+        Here is the job description (JD):
+        """ + jdText;
+        }
+
+        private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> requestBody = new HashMap<>();
