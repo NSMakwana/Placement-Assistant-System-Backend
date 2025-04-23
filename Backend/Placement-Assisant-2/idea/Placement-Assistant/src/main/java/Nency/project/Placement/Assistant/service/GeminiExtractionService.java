@@ -113,28 +113,26 @@ public class GeminiExtractionService {
     }
 
     private String buildPrompt(String jdText) {
-        return "You are a job description extraction assistant. Your task is to extract the following fields from the provided job description:\n" +
-                "1. Company Name\n" +
-                "2. Eligibility Criteria (Education Qualification and Academics)\n" +
-                "3. Interview Process\n" +
-                "4. Positions (Position Name and Number)\n\n" +
-                "The JSON structure should be:\n" +
+        return "Extract the following fields from the job description and return them in strict JSON format. Start your response with '{' and do not include any explanation.\n\n" +
+                "The structure should be:\n" +
                 "{\n" +
                 "  \"companyName\": \"\",\n" +
                 "  \"eligibilityCriteria\": {\n" +
                 "    \"education\": \"\",\n" +
                 "    \"academicPercent\": \"\"\n" +
                 "  },\n" +
-                "  \"interviewProcess\": [\n" +
-                "    \"\", \"\", \"\"\n" +
-                "  ],\n" +
+                "  \"interviewProcess\": [\"\", \"\", \"\"],\n" +
                 "  \"positions\": [\n" +
-                "    { \"position\": \"\", \"numberOfPositions\": \"\" }\n" +
+                "    { \"position\": \"MERN/MEAN Interns\" },\n" +
+                "    { \"position\": \"Java Interns\" },\n" +
+                "    { \"position\": \"Odoo/Python Interns\" },\n" +
+                "    { \"position\": \"DevOps Interns\" },\n" +
+                "    { \"position\": \"AI/ML Interns\" },\n" +
+                "    { \"position\": \"RPA Interns\" }\n" +
                 "  ]\n" +
                 "}\n\n" +
-                "Job Description:\n" + jdText;
+                "Here is the job description:\n" + jdText;
     }
-
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
@@ -154,6 +152,11 @@ public class GeminiExtractionService {
         if (response.statusCode() == 200) {
             // Log raw response for debugging
             System.out.println("Hugging Face Response: " + response.body());
+            String jsonPart = response.body()
+                    .replaceAll("^\\[\\{\"generated_text\":\\s*\"", "")
+                    .replaceAll("\"\\}\\]$", "")
+                    .trim();
+
             return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
