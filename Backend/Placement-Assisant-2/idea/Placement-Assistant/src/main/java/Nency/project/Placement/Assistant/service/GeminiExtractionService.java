@@ -161,13 +161,13 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
           ]
         }
         
-        ⚠️ Only return valid JSON. Do not include explanations, notes, or markdown formatting. Start your response with `{`.
+         Only return valid JSON. Do not include explanations, notes, or markdown formatting. Start your response with `{`.
         
         Here is the job description (JD):
         """ + jdText;
         }
 
-        private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
+    private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> requestBody = new HashMap<>();
@@ -184,19 +184,18 @@ private static final String ENDPOINT = "https://api-inference.huggingface.co/mod
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            // Log raw response for debugging
-            System.out.println("Hugging Face Response: " + response.body());
             String jsonPart = response.body()
                     .replaceAll("^\\[\\{\"generated_text\":\\s*\"", "")
                     .replaceAll("\"\\}\\]$", "")
                     .trim();
 
+            System.out.println("Cleaned JSON Part: " + jsonPart);
             return jsonPart;
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
         }
-
     }
+
     private String extractJsonFromHuggingFaceResponse(String rawResponse) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         // Parse the response JSON array: [{"generated_text": "..."}]
