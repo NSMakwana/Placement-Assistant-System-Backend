@@ -88,285 +88,153 @@
 
 
 
-//
-//package Nency.project.Placement.Assistant.service;
-//
-//import com.fasterxml.jackson.core.JsonProcessingException;
-//import com.fasterxml.jackson.core.type.TypeReference;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Service;
-//
-//import java.io.IOException;
-//import java.net.URI;
-//import java.net.http.HttpClient;
-//import java.net.http.HttpRequest;
-//import java.net.http.HttpResponse;
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//@Service
-//public class GeminiExtractionService {
-//
-//    @Value("${jwt.token.secret}") // Inject the Hugging Face API token
-//    private String API_TOKEN;
-//
-////    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
-////    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/byt5-small";
-//     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/mt5-large";
-//
-//    public Map<String, Object> extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
-//        String prompt = buildPrompt(jdText);
-//        String rawResponse = sendToHuggingFace(prompt);
-//        String json = extractJsonFromHuggingFaceResponse(rawResponse);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        return mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
-//    }
-//
-//    private String buildPrompt(String jdText) {
-//        return """
-//                You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD)
-//                Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
-//                **Use actual values from the JD*.* **Do NOT use placeholders or template texts like "[Company Name]" or "[Job Designation]".**
-//                Your JSON output format should be exactly like this:
-//                return it in **valid JSON format** that matches this structure:
-//                          {
-//                             "name": "[Company Name]",
-//                             "batch": "[Target Batch, if mentioned]",
-//                             "address": {
-//                               "blockNo": "[Block Number, if mentioned]",
-//                               "buildingName": "[Building Name, if mentioned]",
-//                               "area": "[Area, if mentioned]",
-//                               "landmark": "[Landmark, if mentioned]",
-//                               "state": "[State, if mentioned]",
-//                               "city": "[City, if mentioned]",
-//                               "pincode": "[Pincode, if mentioned]"
-//                             },
-//                             "contactPerson": {
-//                               "name": "[Contact Person's Name, if mentioned]",
-//                               "designation": "[Contact Person's Designation, if mentioned]",
-//                               "email": "[Contact Person's Email, if mentioned]",
-//                               "mobile": "[Contact Person's Mobile Number, if mentioned]"
-//                             },
-//                             "designations": [
-//                               {
-//                                 "designation": "[Job Designation]",
-//                                 "Package": "[Salary Package, if mentioned]",
-//                                 "bond": "[Bond Details, if mentioned]",
-//                                 "location": "[Job Location, if mentioned]",
-//                                 "requiredQualifications": "[List of Required Qualifications]",
-//                                 "placementProcess": [
-//                                   {
-//                                     "roundNumber": 1,
-//                                     "round": "[Name of the First Round]",
-//                                     "description": "[Description of the First Round, if mentioned]"
-//                                   },
-//                                   {
-//                                     "roundNumber": 2,
-//                                     "round": "[Name of the Second Round]",
-//                                     "description": "[Description of the Second Round, if mentioned]"
-//                                   },
-//                                   // ... more rounds if applicable
-//                                 ]
-//                               },
-//                               // ... more designations if applicable
-//                             ]
-//                           }
-//
-//                           Extract the relevant information from the job description and fill in the JSON structure. If a piece of information is not mentioned, leave the corresponding field empty (e.g., ""). For requiredQualifications and placementProcess, extract all mentioned items into lists.
-//                           Do not include any comments such as // or /* */ in the JSON.
-//                           Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
-//
-//                           Here is the job description (JD):""" + jdText;
-//
-//    }
-//
-//    private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
-//        HttpClient client = HttpClient.newHttpClient();
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        Map<String, String> requestBody = new HashMap<>();
-//        requestBody.put("inputs", prompt);
-//        String jsonBody = mapper.writeValueAsString(requestBody);
-//
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .uri(URI.create(ENDPOINT))
-//                .header("Authorization", "Bearer " + API_TOKEN)
-//                .header("Content-Type", "application/json")
-//                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-//                .build();
-//
-//        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//
-//        if (response.statusCode() == 200) {
-//            return response.body();
-//        } else {
-//            throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
-//        }
-//    }
-//
-//    private String extractJsonFromHuggingFaceResponse(String rawResponse) throws IOException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        var root = mapper.readTree(rawResponse);
-//
-//        if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
-//            String generatedText = root.get(0).get("generated_text").asText();
-//
-//            int firstBrace = generatedText.indexOf('{');
-//            int lastBrace = generatedText.lastIndexOf('}');
-//            if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
-//                throw new IOException("No valid JSON found in Hugging Face response.");
-//            }
-//
-//            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1);
-//
-//
-//            //  Remove JavaScript-style comments
-//            extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
-//
-//            // Remove trailing commas before closing brackets or braces
-//            extractedJson = extractedJson.replaceAll(",(\\s*[}\\]])", "$1");
-//
-//            // Remove stray closing brackets
-//            extractedJson = extractedJson.replaceAll("\\[\\s*\\]", "[]");
-//
-//            return extractedJson;
-//        } else {
-//            throw new IOException("Unexpected response structure: " + rawResponse);
-//        }
-//    }
-//
-//}
 
 package Nency.project.Placement.Assistant.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class GeminiExtractionService {
 
-    public Map<String, Object> extractDataFromPdf(MultipartFile file) throws IOException {
-        String jdText = extractTextFromPDF(file);
-        return extractDataLocally(jdText);
+    @Value("${jwt.token.secret}") // Inject the Hugging Face API token
+    private String API_TOKEN;
+
+//    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
+//    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/byt5-small";
+     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-alpha";
+
+    public Map<String, Object> extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
+        String prompt = buildPrompt(jdText);
+        String rawResponse = sendToHuggingFace(prompt);
+        String json = extractJsonFromHuggingFaceResponse(rawResponse);
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
     }
 
-    private String extractTextFromPDF(MultipartFile file) throws IOException {
-        org.apache.pdfbox.pdmodel.PDDocument document = null;
-        try {
-            document = org.apache.pdfbox.pdmodel.PDDocument.load(file.getInputStream());
-            org.apache.pdfbox.text.PDFTextStripper stripper = new org.apache.pdfbox.text.PDFTextStripper();
-            return stripper.getText(document);
-        } finally {
-            if (document != null) {
-                document.close();
-            }
+    private String buildPrompt(String jdText) {
+        return """
+                You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD)
+                Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
+                **Use actual values from the JD*.* **Do NOT use placeholders or template texts like "[Company Name]" or "[Job Designation]".**
+                Your JSON output format should be exactly like this:
+                return it in **valid JSON format** that matches this structure:
+                          {
+                             "name": "[Company Name]",
+                             "batch": "[Target Batch, if mentioned]",
+                             "address": {
+                               "blockNo": "[Block Number, if mentioned]",
+                               "buildingName": "[Building Name, if mentioned]",
+                               "area": "[Area, if mentioned]",
+                               "landmark": "[Landmark, if mentioned]",
+                               "state": "[State, if mentioned]",
+                               "city": "[City, if mentioned]",
+                               "pincode": "[Pincode, if mentioned]"
+                             },
+                             "contactPerson": {
+                               "name": "[Contact Person's Name, if mentioned]",
+                               "designation": "[Contact Person's Designation, if mentioned]",
+                               "email": "[Contact Person's Email, if mentioned]",
+                               "mobile": "[Contact Person's Mobile Number, if mentioned]"
+                             },
+                             "designations": [
+                               {
+                                 "designation": "[Job Designation]",
+                                 "Package": "[Salary Package, if mentioned]",
+                                 "bond": "[Bond Details, if mentioned]",
+                                 "location": "[Job Location, if mentioned]",
+                                 "requiredQualifications": "[List of Required Qualifications]",
+                                 "placementProcess": [
+                                   {
+                                     "roundNumber": 1,
+                                     "round": "[Name of the First Round]",
+                                     "description": "[Description of the First Round, if mentioned]"
+                                   },
+                                   {
+                                     "roundNumber": 2,
+                                     "round": "[Name of the Second Round]",
+                                     "description": "[Description of the Second Round, if mentioned]"
+                                   },
+                                   // ... more rounds if applicable
+                                 ]
+                               },
+                               // ... more designations if applicable
+                             ]
+                           }
+               
+                           Extract the relevant information from the job description and fill in the JSON structure. If a piece of information is not mentioned, leave the corresponding field empty (e.g., ""). For requiredQualifications and placementProcess, extract all mentioned items into lists.
+                           Do not include any comments such as // or /* */ in the JSON.
+                           Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
+               
+                           Here is the job description (JD):""" + jdText;
+
+    }
+
+    private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("inputs", prompt);
+        String jsonBody = mapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(ENDPOINT))
+                .header("Authorization", "Bearer " + API_TOKEN)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return response.body();
+        } else {
+            throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
         }
     }
 
-    private Map<String, Object> extractDataLocally(String jdText) {
-        Map<String, Object> companyDetails = new HashMap<>();
-        Map<String, Object> address = new HashMap<>();
-        Map<String, Object> contactPerson = new HashMap<>();
-        List<Map<String, Object>> designations = new ArrayList<>();
-        Map<String, Object> currentDesignation = new HashMap<>();
-        List<Map<String, Object>> placementProcess = new ArrayList<>();
-        Map<String, Object> currentRound = new HashMap<>();
+    private String extractJsonFromHuggingFaceResponse(String rawResponse) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        var root = mapper.readTree(rawResponse);
 
-        // VERY BASIC and FRAGILE REGEX PATTERNS - ADJUST AS NEEDED
-        Pattern namePattern = Pattern.compile("Company:\\s*(.*?)(?:\\n|$)");
-        Pattern batchPattern = Pattern.compile("Batch:\\s*(.*?)(?:\\n|$)");
-        Pattern blockNoPattern = Pattern.compile("Block No:\\s*(.*?)(?:\\n|$)");
-        Pattern buildingNamePattern = Pattern.compile("Building:\\s*(.*?)(?:\\n|$)");
-        Pattern areaPattern = Pattern.compile("Area:\\s*(.*?)(?:\\n|$)");
-        Pattern landmarkPattern = Pattern.compile("Landmark:\\s*(.*?)(?:\\n|$)");
-        Pattern statePattern = Pattern.compile("State:\\s*(.*?)(?:\\n|$)");
-        Pattern cityPattern = Pattern.compile("City:\\s*(.*?)(?:\\n|$)");
-        Pattern pincodePattern = Pattern.compile("Pincode:\\s*(.*?)(?:\\n|$)");
-        Pattern contactNamePattern = Pattern.compile("Contact Name:\\s*(.*?)(?:\\n|$)");
-        Pattern contactDesignationPattern = Pattern.compile("Designation:\\s*(.*?)(?:\\n|$)");
-        Pattern contactEmailPattern = Pattern.compile("Email:\\s*(.*?)(?:\\n|$)");
-        Pattern contactMobilePattern = Pattern.compile("Mobile:\\s*(.*?)(?:\\n|$)");
-        Pattern designationTitlePattern = Pattern.compile("Job Title:\\s*(.*?)(?:\\n|$)");
-        Pattern packageInfoPattern = Pattern.compile("Package:\\s*(.*?)(?:\\n|$)");
-        Pattern bondInfoPattern = Pattern.compile("Bond:\\s*(.*?)(?:\\n|$)");
-        Pattern locationInfoPattern = Pattern.compile("Location:\\s*(.*?)(?:\\n|$)");
-        Pattern qualificationsPattern = Pattern.compile("Qualifications:\\s*(.*?)(?:\\n|$)");
-        Pattern roundNamePattern = Pattern.compile("Round (\\d+):\\s*(.*?)(?:\\n|$)");
-        Pattern roundDescriptionPattern = Pattern.compile("Description:\\s*(.*?)(?:\\n|$)");
+        if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
+            String generatedText = root.get(0).get("generated_text").asText();
 
-        Matcher nameMatcher = namePattern.matcher(jdText);
-        if (nameMatcher.find()) companyDetails.put("name", nameMatcher.group(1).trim());
-        Matcher batchMatcher = batchPattern.matcher(jdText);
-        if (batchMatcher.find()) companyDetails.put("batch", batchMatcher.group(1).trim());
-
-        Matcher blockNoMatcher = blockNoPattern.matcher(jdText);
-        if (blockNoMatcher.find()) address.put("blockNo", blockNoMatcher.group(1).trim());
-        Matcher buildingNameMatcher = buildingNamePattern.matcher(jdText);
-        if (buildingNameMatcher.find()) address.put("buildingName", buildingNameMatcher.group(1).trim());
-        Matcher areaMatcher = areaPattern.matcher(jdText);
-        if (areaMatcher.find()) address.put("area", areaMatcher.group(1).trim());
-        Matcher landmarkMatcher = landmarkPattern.matcher(jdText);
-        if (landmarkMatcher.find()) address.put("landmark", landmarkMatcher.group(1).trim());
-        Matcher stateMatcher = statePattern.matcher(jdText);
-        if (stateMatcher.find()) address.put("state", stateMatcher.group(1).trim());
-        Matcher cityMatcher = cityPattern.matcher(jdText);
-        if (cityMatcher.find()) address.put("city", cityMatcher.group(1).trim());
-        Matcher pincodeMatcher = pincodePattern.matcher(jdText);
-        if (pincodeMatcher.find()) address.put("pincode", pincodeMatcher.group(1).trim());
-        companyDetails.put("address", address);
-
-        Matcher contactNameMatcher = contactNamePattern.matcher(jdText);
-        if (contactNameMatcher.find()) contactPerson.put("name", contactNameMatcher.group(1).trim());
-        Matcher contactDesignationMatcher = contactDesignationPattern.matcher(jdText);
-        if (contactDesignationMatcher.find()) contactPerson.put("designation", contactDesignationMatcher.group(1).trim());
-        Matcher contactEmailMatcher = contactEmailPattern.matcher(jdText);
-        if (contactEmailMatcher.find()) contactPerson.put("email", contactEmailMatcher.group(1).trim());
-        Matcher contactMobileMatcher = contactMobilePattern.matcher(jdText);
-        if (contactMobileMatcher.find()) contactPerson.put("mobile", contactMobileMatcher.group(1).trim());
-        companyDetails.put("contactPerson", contactPerson);
-
-        Matcher designationTitleMatcher = designationTitlePattern.matcher(jdText);
-        while (designationTitleMatcher.find()) {
-            currentDesignation = new HashMap<>();
-            currentDesignation.put("designation", designationTitleMatcher.group(1).trim());
-
-            Matcher packageMatcher = packageInfoPattern.matcher(jdText);
-            if (packageMatcher.find()) currentDesignation.put("Package", packageMatcher.group(1).trim());
-            Matcher bondMatcher = bondInfoPattern.matcher(jdText);
-            if (bondMatcher.find()) currentDesignation.put("bond", bondMatcher.group(1).trim());
-            Matcher locationMatcher = locationInfoPattern.matcher(jdText);
-            if (locationMatcher.find()) currentDesignation.put("location", locationMatcher.group(1).trim());
-            Matcher qualificationsMatcher = qualificationsPattern.matcher(jdText);
-            if (qualificationsMatcher.find()) currentDesignation.put("requiredQualifications", qualificationsMatcher.group(1).trim().split(",\\s*"));
-
-            placementProcess = new ArrayList<>();
-            Matcher roundMatcher = roundNamePattern.matcher(jdText);
-            while (roundMatcher.find()) {
-                currentRound = new HashMap<>();
-                currentRound.put("roundNumber", Integer.parseInt(roundMatcher.group(1)));
-                currentRound.put("round", roundMatcher.group(2).trim());
-                Matcher descMatcher = roundDescriptionPattern.matcher(jdText);
-                if (descMatcher.find()) {
-                    currentRound.put("description", descMatcher.group(1).trim());
-                }
-                placementProcess.add(currentRound);
+            int firstBrace = generatedText.indexOf('{');
+            int lastBrace = generatedText.lastIndexOf('}');
+            if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
+                throw new IOException("No valid JSON found in Hugging Face response.");
             }
-            currentDesignation.put("placementProcess", placementProcess);
-            designations.add(currentDesignation);
-        }
-        companyDetails.put("designations", designations);
 
-        return companyDetails;
+            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1);
+
+
+            //  Remove JavaScript-style comments
+            extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
+
+            // Remove trailing commas before closing brackets or braces
+            extractedJson = extractedJson.replaceAll(",(\\s*[}\\]])", "$1");
+
+            // Remove stray closing brackets
+            extractedJson = extractedJson.replaceAll("\\[\\s*\\]", "[]");
+
+            return extractedJson;
+        } else {
+            throw new IOException("Unexpected response structure: " + rawResponse);
+        }
     }
+
 }
