@@ -119,10 +119,7 @@ public class GeminiExtractionService {
     private String buildPrompt(String jdText) {
         return """
                 You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD) and return it in **valid JSON format** that matches this structure:
-
-             
-                          
-                           {
+                          {
                              "name": "[Company Name]",
                              "batch": "[Target Batch, if mentioned]",
                              "address": {
@@ -166,7 +163,7 @@ public class GeminiExtractionService {
                            }
                
                            Extract the relevant information from the job description and fill in the JSON structure. If a piece of information is not mentioned, leave the corresponding field empty (e.g., ""). For requiredQualifications and placementProcess, extract all mentioned items into lists.
-               
+                           Do not include any comments such as // or /* */ in the JSON.
                            Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
                
                            Here is the job description (JD):
@@ -200,22 +197,27 @@ public class GeminiExtractionService {
 
     private String extractJsonFromHuggingFaceResponse(String rawResponse) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        // Parse the response JSON array: [{"generated_text": "..."}]
         var root = mapper.readTree(rawResponse);
 
-        // Check if the response has the correct structure
         if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
             String generatedText = root.get(0).get("generated_text").asText();
 
-            // Extract JSON substring from the generated text
             int firstBrace = generatedText.indexOf('{');
             int lastBrace = generatedText.lastIndexOf('}');
             if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
                 throw new IOException("No valid JSON found in Hugging Face response.");
             }
-            return generatedText.substring(firstBrace, lastBrace + 1);
+
+            // Extract and clean JSON
+            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1);
+
+
+            String cleanedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
+
+            return cleanedJson;
         } else {
             throw new IOException("Unexpected response structure: " + rawResponse);
         }
     }
+
 }
