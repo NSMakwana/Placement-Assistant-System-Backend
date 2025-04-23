@@ -118,54 +118,52 @@ public class GeminiExtractionService {
 
     private String buildPrompt(String jdText) {
         return """
-                Extract all the relevant information from this job description to fill out a company details form.
-                Identify and provide the actual values for the following fields if they are present in the document.
-                If a piece of information is not found, leave the corresponding field empty or null in the JSON.
-                Return the information as a JSON object with the following structure:
-                 "{\\n" +
-                                                "  \\"name\\": \\"[Company Name]\\",\\n" +
-                                                "  \\"batch\\": \\"[Target Batch, if mentioned]\\",\\n" +
-                                                "  \\"address\\": {\\n" +
-                                                "    \\"blockNo\\": \\"[Block Number, if mentioned]\\",\\n" +
-                                                "    \\"buildingName\\": \\"[Building Name, if mentioned]\\",\\n" +
-                                                "    \\"area\\": \\"[Area, if mentioned]\\",\\n" +
-                                                "    \\"landmark\\": \\"[Landmark, if mentioned]\\",\\n" +
-                                                "    \\"state\\": \\"[State, if mentioned]\\",\\n" +
-                                                "    \\"city\\": \\"[City, if mentioned]\\",\\n" +
-                                                "    \\"pincode\\": \\"[Pincode, if mentioned]\\"\\n" +
-                                                "  },\\n" +
-                                                "  \\"contactPerson\\": {\\n" +
-                                                "    \\"name\\": \\"[Contact Person's Name, if mentioned]\\",\\n" +
-                                                "    \\"designation\\": \\"[Contact Person's Designation, if mentioned]\\",\\n" +
-                                                "    \\"email\\": \\"[Contact Person's Email, if mentioned]\\",\\n" +
-                                                "    \\"mobile\\": \\"[Contact Person's Mobile Number, if mentioned]\\"\\n" +
-                                                "  },\\n" +
-                                                "  \\"designations\\": [\\n" +
-                                                "    {\\n" +
-                                                "      \\"designation\\": \\"[Job Designation]\\",\\n" +
-                                                "      \\"Package\\": \\"[Salary Package, if mentioned]\\",\\n" +
-                                                "      \\"bond\\": \\"[Bond Details, if mentioned]\\",\\n" +
-                                                "      \\"location\\": \\"[Job Location, if mentioned]\\",\\n" +
-                                                "      \\"requiredQualifications\\": \\"[List of Required Qualifications]\\",\\n" +
-                                                "      \\"placementProcess\\": [\\n" +
-                                                "        {\\n" +
-                                                "          \\"roundNumber\\": 1,\\n" +
-                                                "          \\"round\\": \\"[Name of the First Round]\\",\\n" +
-                                                "          \\"description\\": \\"[Description of the First Round, if mentioned]\\"\\n" +
-                                                "        },\\n" +
-                                                "        {\\n" +
-                                                "          \\"roundNumber\\": 2,\\n" +
-                                                "          \\"round\\": \\"[Name of the Second Round]\\",\\n" +
-                                                "          \\"description\\": \\"[Description of the Second Round, if mentioned]\\"\\n" +
-                                                "        }\\n" +
-                                                "      ]\\n" +
-                                                "    }\\n" +
-                                                "  ]\\n" +
-                                                "}"
+            You are a helpful assistant. Your task is to extract structured company placement data from the following job description (JD).
+            Extract the following structured placement-related information in valid JSON format directly from the job description (JD) text provided below.
+            **Only use actual values from the JD**. If a piece of information is not mentioned, the corresponding field's value should be null or an empty list/object as appropriate.
+
+            Return the information in **valid JSON format** that adheres to the following structure. Extract and fill in the actual values from the JD for each field. If a value is not found, use null (or [] for lists, {} for objects).
+
+            {
+               "name": null,
+               "batch": null,
+               "address": {
+                 "blockNo": null,
+                 "buildingName": null,
+                 "area": null,
+                 "landmark": null,
+                 "state": null,
+                 "city": null,
+                 "pincode": null
+               },
+               "contactPerson": {
+                 "name": null,
+                 "designation": null,
+                 "email": null,
+                 "mobile": null
+               },
+               "designations": [
+                 {
+                   "designation": null,
+                   "Package": null,
+                   "bond": null,
+                   "location": null,
+                   "requiredQualifications": [],
+                   "placementProcess": [
+                     {
+                       "roundNumber": 1,
+                       "round": null,
+                       "description": null
+                     }
+                     ]
+                 }
+               ]
+             }
+
              Here is the job description (JD):
             """ + jdText + """
 
-            Ensure the JSON response is syntactically correct and directly parsable by a JSON parser. Do not include any extra text, explanations, or markdown formatting. Start your response directly with the JSON object '{'. If a field has no value in the JD, its value in the JSON should be null (or an empty array for lists).
+            Ensure the JSON response is syntactically correct and directly parsable by a JSON parser. Do not include any extra text, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
             """;
     }
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
@@ -186,6 +184,7 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
+            System.out.print(jsonBody);
             return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
