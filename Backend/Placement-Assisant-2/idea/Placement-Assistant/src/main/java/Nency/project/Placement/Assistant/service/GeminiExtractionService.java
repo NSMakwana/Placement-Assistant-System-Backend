@@ -120,6 +120,10 @@ public class GeminiExtractionService {
         String rawResponse = sendToHuggingFace(prompt);
         String json = extractJsonFromHuggingFaceResponse(rawResponse);
 
+        json = json.replaceAll("\\r?\\n", "\\\\n");
+
+        System.out.println("Cleaned JSON: \n" + json);
+
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, new TypeReference<Map<String, Object>>() {
         });
