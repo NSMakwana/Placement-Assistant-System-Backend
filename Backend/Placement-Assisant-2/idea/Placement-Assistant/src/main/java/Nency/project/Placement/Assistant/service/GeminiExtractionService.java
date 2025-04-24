@@ -121,66 +121,63 @@ public class GeminiExtractionService {
         String json = extractJsonFromHuggingFaceResponse(rawResponse);
 
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+        return mapper.readValue(json, new TypeReference<Map<String, Object>>() {
+        });
     }
 
     private String buildPrompt(String jdText) {
         return """
-                extract structured company placement data from the following job description (JD) in valid JSON format directly from the job description (JD) text provided below.
-                **Use actual values from the JD*.* **Do NOT use placeholders or template texts like "[Company Name]" or "[Job Designation]".**
-                Here is the job description (JD):""" + jdText+ """
-                Your JSON output format should be exactly like this:
-                return it in **JSON format** that matches this structure:
-                          {
-                             "name": "[Company Name]",
-                             "batch": "[Target Batch, if mentioned]",
-                             "address": {
-                               "blockNo": "[Block Number, if mentioned]",
-                               "buildingName": "[Building Name, if mentioned]",
-                               "area": "[Area, if mentioned]",
-                               "landmark": "[Landmark, if mentioned]",
-                               "state": "[State, if mentioned]",
-                               "city": "[City, if mentioned]",
-                               "pincode": "[Pincode, if mentioned]"
-                             },
-                             "contactPerson": {
-                               "name": "[Contact Person's Name, if mentioned]",
-                               "designation": "[Contact Person's Designation, if mentioned]",
-                               "email": "[Contact Person's Email, if mentioned]",
-                               "mobile": "[Contact Person's Mobile Number, if mentioned]"
-                             },
-                             "designations": [
-                               {
-                                 "designation": "[Job Designation]",
-                                 "Package": "[Salary Package, if mentioned]",
-                                 "bond": "[Bond Details, if mentioned]",
-                                 "location": "[Job Location, if mentioned]",
-                                 "requiredQualifications": "[List of Required Qualifications]",
-                                 "placementProcess": [
-                                   {
-                                     "roundNumber": 1,
-                                     "round": "[Name of the First Round]",
-                                     "description": "[Description of the First Round, if mentioned]"
-                                   },
-                                   {
-                                     "roundNumber": 2,
-                                     "round": "[Name of the Second Round]",
-                                     "description": "[Description of the Second Round, if mentioned]"
-                                   },
-                                   // ... more rounds if applicable
-                                 ]
-                               },
-                               // ... more designations if applicable
-                             ]
-                           }
-               
-                           Extract the relevant information from the job description and fill in the JSON structure. If a piece of information is not mentioned, leave the corresponding field empty (e.g., ""). For requiredQualifications and placementProcess, extract all mentioned items into lists.
-                           Do not include any comments such as // or /* */ in the JSON.
-                           Only return valid JSON. Do not include any introductory or concluding remarks, explanations, or markdown formatting. Start your response directly with the JSON object '{'.
-               """
-                          ;
-
+                Extract structured company placement data from the following job description (JD) in valid JSON format directly from the job description (JD) text provided below.
+                Use JSON keys to guide the output.
+                
+                JD:
+                """
+                + jdText
+                + """
+                Then, return the output like this:
+                ```json
+                {
+                  "name": "Company Name",
+                  "batch": "Target Batch,
+                
+                  "address": {
+                    "blockNo": "Block Number",
+                    "buildingName": "Building Name",
+                    "area": "Area",
+                    "landmark": "Landmark",
+                    "state": "State",
+                    "city": "City",
+                    "pincode": "Pincode"
+                  },
+                
+                  "contactPerson": {
+                    "name": "Contact Person's Name",
+                    "designation": "Contact Person's Designation",
+                    "email": "Contact Person's Email",
+                    "mobile": "Contact Person's Mobile Number"
+                  },
+                
+                  "designations": [
+                    {
+                      "designation": "Job Designation",
+                      "package": "Salary Package",
+                      "bond": "Bond Details",
+                      "location": "Job Location",
+                      "requiredQualifications": ["List of Required Qualifications"],
+                      "placementProcess": [
+                        {
+                          "roundNumber": "Round Number",
+                          "round": "Name of the Round",
+                          "description": "Description of the Round"
+                        }
+                      ]
+                    }
+                  ]
+                }
+                ```json
+                """;
     }
+
 
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
