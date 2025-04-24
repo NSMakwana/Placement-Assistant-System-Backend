@@ -222,7 +222,7 @@ public class GeminiExtractionService {
                 throw new IOException("No valid JSON found in Hugging Face response.");
             }
 
-            String extractedJson = generatedText.substring(firstBrace+1, lastBrace + 1).trim();
+            String extractedJson = generatedText.substring(firstBrace+4, lastBrace + 1).trim();
 
             System.out.println("Generated Text: \n" + generatedText);
 
