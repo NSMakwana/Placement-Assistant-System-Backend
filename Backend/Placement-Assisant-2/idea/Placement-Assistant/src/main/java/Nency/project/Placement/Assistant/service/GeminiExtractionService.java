@@ -104,6 +104,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class GeminiExtractionService {
@@ -215,35 +217,51 @@ public class GeminiExtractionService {
         if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
             String generatedText = root.get(0).get("generated_text").asText();
 
-            int firstBrace = generatedText.lastIndexOf('{');
-            int lastBrace = generatedText.lastIndexOf('}');
+//            int firstBrace = generatedText.lastIndexOf('{');
+//            int lastBrace = generatedText.lastIndexOf('}');
+//
+//            if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
+//                throw new IOException("No valid JSON found in Hugging Face response.");
+//            }
+//
+//            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1).trim();
+//
+//            System.out.println("Generated Text: \n" + generatedText);
+//
+//
+//            // 💡 Detect and remove extra quotes if it's wrapped
+//            if (extractedJson.startsWith("\"") && extractedJson.endsWith("\"")) {
+//                extractedJson = extractedJson.substring(1, extractedJson.length() - 1);
+//                extractedJson = extractedJson.replace("\\\"", "\""); // unescape quotes
+//                extractedJson = extractedJson.replace("\\n", " ");   // optional: flatten newlines
+//            }
+//            //  Remove JavaScript-style comments
+//            extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
+//
+//            // Remove trailing commas before closing brackets or braces
+//            extractedJson = extractedJson.replaceAll(",(\\s*[}\\]])", "$1");
+//
+//            // Remove stray closing brackets
+//            extractedJson = extractedJson.replaceAll("\\[\\s*\\]", "[]");
+            Pattern jsonPattern = Pattern.compile("\\{(?:[^{}]|(?R))*+\\}", Pattern.DOTALL);
+            Matcher matcher = jsonPattern.matcher(generatedText);
 
-            if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
-                throw new IOException("No valid JSON found in Hugging Face response.");
-            }
+            int jsonIndex = 0;
+            while (matcher.find()) {
+                jsonIndex++;
+                String jsonCandidate = matcher.group();
 
-            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1).trim();
+                // the **second** JSON block
+                if (jsonIndex == 2) {
+                    // Clean the JSON
+                    jsonCandidate = jsonCandidate.replaceAll("(?m)^\\s*//.*\\n?", "");
+                    jsonCandidate = jsonCandidate.replaceAll(",(\\s*[}\\]])", "$1");
+                    jsonCandidate = jsonCandidate.replaceAll("\\[\\s*\\]", "[]");
 
-            System.out.println("Generated Text: \n" + generatedText);
+                    System.out.println("Extracted JSON:\n" + jsonCandidate);
+                    return jsonCandidate;
+                }
 
-
-            // 💡 Detect and remove extra quotes if it's wrapped
-            if (extractedJson.startsWith("\"") && extractedJson.endsWith("\"")) {
-                extractedJson = extractedJson.substring(1, extractedJson.length() - 1);
-                extractedJson = extractedJson.replace("\\\"", "\""); // unescape quotes
-                extractedJson = extractedJson.replace("\\n", " ");   // optional: flatten newlines
-            }
-            //  Remove JavaScript-style comments
-            extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
-
-            // Remove trailing commas before closing brackets or braces
-            extractedJson = extractedJson.replaceAll(",(\\s*[}\\]])", "$1");
-
-            // Remove stray closing brackets
-            extractedJson = extractedJson.replaceAll("\\[\\s*\\]", "[]");
-
-            System.out.print("\nExtracted Json:"+extractedJson);
-            return extractedJson;
         } else {
             throw new IOException("Unexpected response structure: " + rawResponse);
         }
