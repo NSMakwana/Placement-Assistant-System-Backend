@@ -85,13 +85,8 @@
 //}
 
 
-
-
-
-
 package Nency.project.Placement.Assistant.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,42 +103,31 @@ import java.util.Map;
 @Service
 public class GeminiExtractionService {
 
-    @Value("${jwt.token.secret}") // Inject the Hugging Face API token
+    @Value("${jwt.token.secret}")
     private String API_TOKEN;
 
     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
-//    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/byt5-small";
-//     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-t5-base";
 
     public Map<String, Object> extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
         String rawResponse = sendToHuggingFace(prompt);
         String json = extractJsonFromHuggingFaceResponse(rawResponse);
 
-        json = json.replaceAll("\\r?\\n", "\\\\n");
-
-        System.out.println("Cleaned JSON: \n" + json);
-
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, new TypeReference<Map<String, Object>>() {
-        });
+        return mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
     }
 
     private String buildPrompt(String jdText) {
         return """
                 Extract structured company placement data from the following job description (JD) in valid JSON format directly from the job description (JD) text provided below.
                 Use JSON keys to guide the output.
-                
+
                 JD:
-                """
-                + jdText
-                + """
+                """ + jdText + """
                 Then, return the output like this given json structure:
-             
                 {
                   "name": "Company Name",
-                  "batch": "Target Batch,
-                
+                  "batch": "Target Batch",
                   "address": {
                     "blockNo": "Block Number",
                     "buildingName": "Building Name",
@@ -153,14 +137,12 @@ public class GeminiExtractionService {
                     "city": "City",
                     "pincode": "Pincode"
                   },
-                
                   "contactPerson": {
                     "name": "Contact Person's Name",
                     "designation": "Contact Person's Designation",
                     "email": "Contact Person's Email",
                     "mobile": "Contact Person's Mobile Number"
                   },
-                
                   "designations": [
                     {
                       "designation": "Job Designation",
@@ -178,10 +160,8 @@ public class GeminiExtractionService {
                     }
                   ]
                 }
-        
                 """;
     }
-
 
     private String sendToHuggingFace(String prompt) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
@@ -201,7 +181,6 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            System.out.print(response);
             return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
@@ -212,7 +191,7 @@ public class GeminiExtractionService {
         ObjectMapper mapper = new ObjectMapper();
         var root = mapper.readTree(rawResponse);
 
-        if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
+        if (root.isArray() && root.size() > 0 && root.get(0).has("generated_text")) {
             String generatedText = root.get(0).get("generated_text").asText();
 
             int firstBrace = generatedText.indexOf('{');
@@ -220,24 +199,16 @@ public class GeminiExtractionService {
             if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
                 throw new IOException("No valid JSON found in Hugging Face response.");
             }
-            System.out.println("Generated Text: \n" + generatedText);
 
             String extractedJson = generatedText.substring(firstBrace, lastBrace + 1);
 
-
-            //  Remove JavaScript-style comments
+            // Cleanup: Remove comments, trailing commas
             extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
-
-            // Remove trailing commas before closing brackets or braces
             extractedJson = extractedJson.replaceAll(",(\\s*[}\\]])", "$1");
-
-            // Remove stray closing brackets
-            extractedJson = extractedJson.replaceAll("\\[\\s*\\]", "[]");
 
             return extractedJson;
         } else {
             throw new IOException("Unexpected response structure: " + rawResponse);
         }
     }
-
 }
