@@ -222,9 +222,14 @@ public class GeminiExtractionService {
             }
             System.out.println("Generated Text: \n" + generatedText);
 
-            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1);
+            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1).trim();
 
-
+            // 💡 Detect and remove extra quotes if it's wrapped
+            if (extractedJson.startsWith("\"") && extractedJson.endsWith("\"")) {
+                extractedJson = extractedJson.substring(1, extractedJson.length() - 1);
+                extractedJson = extractedJson.replace("\\\"", "\""); // unescape quotes
+                extractedJson = extractedJson.replace("\\n", " ");   // optional: flatten newlines
+            }
             //  Remove JavaScript-style comments
             extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
 
@@ -234,6 +239,7 @@ public class GeminiExtractionService {
             // Remove stray closing brackets
             extractedJson = extractedJson.replaceAll("\\[\\s*\\]", "[]");
 
+            System.out.print("\nExtracted Json:"+extractedJson);
             return extractedJson;
         } else {
             throw new IOException("Unexpected response structure: " + rawResponse);
