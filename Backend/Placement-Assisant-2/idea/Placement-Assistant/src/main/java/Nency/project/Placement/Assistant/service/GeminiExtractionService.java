@@ -252,7 +252,7 @@ public class GeminiExtractionService {
                 String jsonCandidate = matcher.group();
 
                 // the **second** JSON block
-                if (jsonIndex == 2) {
+                if (jsonIndex == 1) {
                     // Clean the JSON
                     jsonCandidate = jsonCandidate.replaceAll("(?m)^\\s*//.*\\n?", "");
                     jsonCandidate = jsonCandidate.replaceAll(",(\\s*[}\\]])", "$1");
