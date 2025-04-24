@@ -134,8 +134,8 @@ public class GeminiExtractionService {
                 """
                 + jdText
                 + """
-                Then, return the output like this:
-                ```json
+                Then, return the output like this given json structure:
+             
                 {
                   "name": "Company Name",
                   "batch": "Target Batch,
@@ -174,7 +174,7 @@ public class GeminiExtractionService {
                     }
                   ]
                 }
-                ```json
+        
                 """;
     }
 
@@ -216,6 +216,7 @@ public class GeminiExtractionService {
             if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
                 throw new IOException("No valid JSON found in Hugging Face response.");
             }
+            System.out.println("Generated Text: \n" + generatedText);
 
             String extractedJson = generatedText.substring(firstBrace, lastBrace + 1);
 
