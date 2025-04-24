@@ -142,7 +142,7 @@ public class GeminiExtractionService {
              
                 {
                   "name": "Company Name",
-                  "batch": "Target Batch,
+                  "batch": "Target Batch",
                 
                   "address": {
                     "blockNo": "Block Number",
