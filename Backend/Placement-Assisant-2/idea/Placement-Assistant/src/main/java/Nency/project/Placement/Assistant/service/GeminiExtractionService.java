@@ -143,6 +143,7 @@ public class GeminiExtractionService {
                 {
                   "name": "Company Name",
                   "batch": "Target Batch",
+                
                   "address": {
                     "blockNo": "Block Number",
                     "buildingName": "Building Name",
@@ -214,14 +215,14 @@ public class GeminiExtractionService {
         if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
             String generatedText = root.get(0).get("generated_text").asText();
 
-            int firstBrace = generatedText.indexOf('\'');
+            int firstBrace = generatedText.lastIndexOf('{');
             int lastBrace = generatedText.lastIndexOf('}');
 
             if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
                 throw new IOException("No valid JSON found in Hugging Face response.");
             }
 
-            String extractedJson = generatedText.substring(firstBrace+1, lastBrace + 1).trim();
+            String extractedJson = generatedText.substring(firstBrace, lastBrace + 1).trim();
 
             System.out.println("Generated Text: \n" + generatedText);
 
