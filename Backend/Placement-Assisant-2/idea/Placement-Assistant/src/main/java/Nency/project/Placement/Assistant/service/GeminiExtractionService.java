@@ -200,6 +200,7 @@ public class GeminiExtractionService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
+            System.out.print(response);
             return response.body();
         } else {
             throw new IOException("Hugging Face API request failed: " + response.statusCode() + " " + response.body());
