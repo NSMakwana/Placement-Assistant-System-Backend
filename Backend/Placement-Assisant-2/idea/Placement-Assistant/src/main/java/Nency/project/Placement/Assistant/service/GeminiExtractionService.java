@@ -262,7 +262,7 @@ public class GeminiExtractionService {
                     return jsonCandidate;
                 }
 
-        } else {
+         else {
             throw new IOException("Unexpected response structure: " + rawResponse);
         }
     }
