@@ -139,7 +139,7 @@ public class GeminiExtractionService {
                 + jdText
                 + """
                 Then, return the output like this given json structure:
-             '
+             
                 {
                   "name": "Company Name",
                   "batch": "Target Batch",
@@ -177,8 +177,8 @@ public class GeminiExtractionService {
                       ]
                     }
                   ]
-                }'
-        
+                }
+                json
                 """;
     }
 
@@ -215,7 +215,7 @@ public class GeminiExtractionService {
         if (root.isArray() && !root.isEmpty() && root.get(0).has("generated_text")) {
             String generatedText = root.get(0).get("generated_text").asText();
 
-            int firstBrace = generatedText.indexOf('\'');
+            int firstBrace = generatedText.lastIndexOf("json");
             int lastBrace = generatedText.lastIndexOf('}');
 
             if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace) {
@@ -233,11 +233,7 @@ public class GeminiExtractionService {
                 extractedJson = extractedJson.replace("\\\"", "\""); // unescape quotes
                 extractedJson = extractedJson.replace("\\n", " ");   // optional: flatten newlines
             }
-            if(extractedJson.startsWith("\'")){
-                extractedJson = extractedJson.substring(1, extractedJson.length()-1);
-                extractedJson = extractedJson.replace("\\\"", "\""); // unescape quotes
-                extractedJson = extractedJson.replace("\\n", " ");   // optional: flatten newlines
-            }
+           
             //  Remove JavaScript-style comments
             extractedJson = extractedJson.replaceAll("(?m)^\\s*//.*\\n?", "");
 
