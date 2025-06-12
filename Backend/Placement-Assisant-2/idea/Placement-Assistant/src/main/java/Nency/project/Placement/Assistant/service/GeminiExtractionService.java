@@ -111,7 +111,7 @@ public class GeminiExtractionService {
     @Value("${jwt.token.secret}") // Inject the Hugging Face API token
     private String API_TOKEN;
 
-    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
+    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/bigscience/bloomz-560m";
 //    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/byt5-small";
 //     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-t5-base";
 

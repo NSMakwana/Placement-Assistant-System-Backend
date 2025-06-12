@@ -55,7 +55,7 @@ public class StudentController {
         this.studentService = studentService;
     }
     @Autowired
-    private StudentRepository studentRepository; // Add this line
+    private StudentRepository studentRepository;
 
 
     // Fetch all students

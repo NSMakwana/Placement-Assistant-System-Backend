@@ -36,7 +36,7 @@ public class CompanyController {
     }
 
     @Autowired
-    private CompanyRepository companyRepository; // Add this line if you want to use the repository directly
+    private CompanyRepository companyRepository;
 
     // Fetch all companies
     @GetMapping
