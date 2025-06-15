@@ -167,7 +167,7 @@ public class CompanyController {
         }
 
     }
-    @PatchMapping("/notify/{id}")
+    @PostMapping("/notify/{id}")
     public ResponseEntity<String> notifyStudents(@PathVariable String id) {
         Optional<Company> companyOptional = companyRepository.findById(id);
         if (companyOptional.isPresent()) {
@@ -179,7 +179,7 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
         }
     }
-    @PatchMapping("/hide/{id}")
+    @PostMapping("/hide/{id}")
     public ResponseEntity<?> hideFromStudents(@PathVariable String id) {
         Optional<Company> optionalCompany = companyRepository.findById(id);
         if (optionalCompany.isEmpty()) {
