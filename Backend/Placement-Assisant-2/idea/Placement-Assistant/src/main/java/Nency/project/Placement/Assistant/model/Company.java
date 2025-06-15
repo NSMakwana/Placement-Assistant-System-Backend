@@ -1,10 +1,13 @@
 package Nency.project.Placement.Assistant.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 @Document(collection = "company")
 public class Company {
+    @Id
+    private String id;
     private String name;
     private String batch;
     private Address address;
@@ -18,6 +21,14 @@ public class Company {
 
     public void setVisibleToStudents(boolean visibleToStudents) {
         this.visibleToStudents = visibleToStudents;
+    }
+    public String getId() {
+        return id;
+    }
+
+    
+    public void setId(String id) {
+        this.id = id;
     }
     //getters and setters
     public String getName() {
