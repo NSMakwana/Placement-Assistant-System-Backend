@@ -192,7 +192,7 @@ public class CompanyController {
     }
     @GetMapping("/visible")
     public List<Company> getVisibleCompanies() {
-        return companyRepository.findByVisibleTrue(); // Only visible companies
+        return companyRepository.findByVisibleToStudentsTrue(); // Only visible companies
     }
 
 }
