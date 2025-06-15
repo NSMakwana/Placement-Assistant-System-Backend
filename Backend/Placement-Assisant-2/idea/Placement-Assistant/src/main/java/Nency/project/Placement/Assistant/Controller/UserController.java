@@ -1,9 +1,15 @@
 package Nency.project.Placement.Assistant.Controller;
+import Nency.project.Placement.Assistant.model.Student;
 import Nency.project.Placement.Assistant.model.User;
 import Nency.project.Placement.Assistant.payload.LoginRequest;
 import Nency.project.Placement.Assistant.payload.SignupRequest;
 import Nency.project.Placement.Assistant.payload.UserResponse;
+import Nency.project.Placement.Assistant.repository.StudentRepository;
 import Nency.project.Placement.Assistant.repository.UserRepository;
+import Nency.project.Placement.Assistant.service.StudentService;
+import Nency.project.Placement.Assistant.service.UserServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.http.HttpStatus;
@@ -23,8 +29,29 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
+    private final UserServices userService;
+
+    @Autowired
+    public UserController(UserServices userService) {
+        this.userService = userService;
+    }
+    @Autowired
+    private StudentRepository studentRepository;
 //    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+@GetMapping
+public List<User> getAllUsers() {
+    logger.info("Fetching all students...");
+    List<User> users = userService.getAllUsers();
+//        List<Student> students = studentRepository.findAll();
+    if (users.isEmpty()) {
+        logger.warn("No user found in the database.");
+    } else {
+        logger.info("Found {} users.", users.size());
+    }
+    return users;
+}
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
