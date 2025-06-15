@@ -27,18 +27,18 @@ import java.util.Map;
 
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     private final UserServices userService;
 
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     public UserController(UserServices userService) {
         this.userService = userService;
     }
-    @Autowired
-    private StudentRepository studentRepository;
+
 //    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 @GetMapping
 public List<User> getAllUsers() {
