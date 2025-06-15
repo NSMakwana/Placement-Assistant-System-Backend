@@ -13,6 +13,8 @@ public interface CompanyRepository extends MongoRepository<Company, String> {
     List<Company> findByBatch(String batch);
     Optional<Company> findByName(String name);
     List<Company> findByNameContainingIgnoreCase(String name);
+    List<Company> findByVisibleTrue();
+
 
 
 }

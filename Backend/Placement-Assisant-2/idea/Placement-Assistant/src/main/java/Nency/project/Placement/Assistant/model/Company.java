@@ -10,7 +10,15 @@ public class Company {
     private Address address;
     private ContactPerson contactPerson;
     private List<Designation> designations;
+    private boolean visibleToStudents = false;
 
+    public boolean isVisibleToStudents() {
+        return visibleToStudents;
+    }
+
+    public void setVisibleToStudents(boolean visibleToStudents) {
+        this.visibleToStudents = visibleToStudents;
+    }
     //getters and setters
     public String getName() {
         return name;

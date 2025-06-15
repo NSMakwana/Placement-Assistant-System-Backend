@@ -165,5 +165,34 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "Failed to create company", "message", e.getMessage()));
         }
+
     }
+    @PatchMapping("/notify/{id}")
+    public ResponseEntity<String> notifyStudents(@PathVariable String id) {
+        Optional<Company> companyOptional = companyRepository.findById(id);
+        if (companyOptional.isPresent()) {
+            Company company = companyOptional.get();
+            company.setVisibleToStudents(true);
+            companyRepository.save(company);
+            return ResponseEntity.ok("Company is now visible to students.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
+        }
+    }
+    @PatchMapping("/hide/{id}")
+    public ResponseEntity<?> hideFromStudents(@PathVariable String id) {
+        Optional<Company> optionalCompany = companyRepository.findById(id);
+        if (optionalCompany.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found");
+        }
+        Company company = optionalCompany.get();
+        company.setVisibleToStudents(false);
+        companyRepository.save(company);
+        return ResponseEntity.ok("Company hidden from students: " + company.getName());
+    }
+    @GetMapping("/visible")
+    public List<Company> getVisibleCompanies() {
+        return companyRepository.findByVisibleTrue(); // Only visible companies
+    }
+
 }
