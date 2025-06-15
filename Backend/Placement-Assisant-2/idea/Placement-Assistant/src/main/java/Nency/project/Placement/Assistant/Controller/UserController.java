@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002","https://placement-assistant-system.vercel.app"},allowedHeaders = "*", allowCredentials = "true")
@@ -90,4 +92,15 @@ public class UserController {
         }
         return ResponseEntity.status(404).body("User not found");
     }
+    @PostMapping("/upload_user")
+    public ResponseEntity<?> createUsersInBulk(@RequestBody List<User> users) {
+        try {
+            List<User> savedUsers = userRepository.saveAll(users);
+            return ResponseEntity.ok(savedUsers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error saving users: " + e.getMessage());
+        }
+    }
+
 }
