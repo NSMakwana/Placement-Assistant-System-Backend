@@ -8,6 +8,7 @@ public class Admin {
     private String id;
     private String name;
     private String email;
+    private String password;
     private String role; // "Super Admin", "Admin", "Sub Admin"
 
     // Getters & Setters
@@ -36,4 +37,11 @@ public class Admin {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
