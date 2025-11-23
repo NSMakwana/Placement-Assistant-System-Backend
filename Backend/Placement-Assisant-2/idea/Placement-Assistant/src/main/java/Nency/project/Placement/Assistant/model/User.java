@@ -16,6 +16,7 @@ public class User {
         
     }
     public User(String email, String role, String name, String eno, boolean hasSubmittedAgreement) {
+        this.id=id;
         this.email = email;
         this.role = role;
         this.name = name;
