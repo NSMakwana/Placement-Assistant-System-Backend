@@ -1,10 +1,12 @@
 package Nency.project.Placement.Assistant.Controller;
 
 import Nency.project.Placement.Assistant.model.Company;
+import Nency.project.Placement.Assistant.model.Notification;
 import Nency.project.Placement.Assistant.model.Student;
 import Nency.project.Placement.Assistant.repository.CompanyRepository;
 import Nency.project.Placement.Assistant.repository.StudentRepository;
 import Nency.project.Placement.Assistant.service.CompanyService;
+import Nency.project.Placement.Assistant.service.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ public class CompanyController {
 
     private static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
-    private final CompanyService companyService;
+    private CompanyService companyService;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -37,6 +39,14 @@ public class CompanyController {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    public CompanyController(CompanyRepository companyRepository, NotificationService notificationService) {
+        this.companyRepository = companyRepository;
+        this.notificationService = notificationService;
+    }
 
     // Fetch all companies
     @GetMapping
@@ -167,32 +177,50 @@ public class CompanyController {
         }
 
     }
-    @PostMapping("/notify/{id}")
-    public ResponseEntity<String> notifyStudents(@PathVariable String id) {
-        Optional<Company> companyOptional = companyRepository.findById(id);
-        if (companyOptional.isPresent()) {
-            Company company = companyOptional.get();
-            company.setVisibleToStudents(true);
-            companyRepository.save(company);
-            return ResponseEntity.ok("Company is now visible to students.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
-        }
-    }
-    @PostMapping("/hide/{id}")
-    public ResponseEntity<?> hideFromStudents(@PathVariable String id) {
-        Optional<Company> optionalCompany = companyRepository.findById(id);
-        if (optionalCompany.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found");
-        }
-        Company company = optionalCompany.get();
-        company.setVisibleToStudents(false);
+
+
+
+    // Notify Students -> make visible + send notification
+    @PostMapping("/notify/{companyId}")
+    public String notifyStudents(@PathVariable String companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        company.setVisibleToStudents(true);
         companyRepository.save(company);
-        return ResponseEntity.ok("Company hidden from students: " + company.getName());
-    }
-    @GetMapping("/visible")
-    public List<Company> getVisibleCompanies() {
-        return companyRepository.findByVisibleToStudentsTrue(); // Only visible companies
+
+        Notification notification = new Notification();
+        notification.setTitle("New Company Available");
+        notification.setMessage("A new company has been added: " + company.getName());
+        notification.setStudentId(null);  // Send to all students
+        notificationService.createNotification(notification);
+
+        return "Students notified!";
     }
 
+    // Hide company -> only hide, no notification
+    @PostMapping("/hide/{companyId}")
+    public String hideCompany(@PathVariable String companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        company.setVisibleToStudents(false);
+        companyRepository.save(company);
+
+        return "Company hidden.";
+    }
+
+    // Get visible companies (for students)
+    @GetMapping("/visible")
+    public List<Company> getVisibleCompanies() {
+        return companyRepository.findByVisibleToStudentsTrue();
+    }
+
+    // Get company by ID
+    @GetMapping("/{companyId}")
+    public Company getCompanyById(@PathVariable String companyId) {
+        return companyRepository.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+    }
 }
+
