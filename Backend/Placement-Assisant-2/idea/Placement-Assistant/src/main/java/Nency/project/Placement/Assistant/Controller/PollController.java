@@ -71,7 +71,7 @@ public class PollController {
         try {
             // Attach pollId
             response.setPollId(pollId);
-            
+
             // Save response
             PollResponse saved = pollResponseRepository.save(response);
             return ResponseEntity.ok(saved);
@@ -128,9 +128,9 @@ public class PollController {
                 map.put("email", student.getEmail());
                 map.put("course", student.getCourse());
             } else {
-                map.put("studentName", "Unknown");
-                map.put("email", "Unknown");
-                map.put("course", "Unknown");
+                map.put("studentName", "test");
+                map.put("email", "test@gmail.com");
+                map.put("course", "MCA");
             }
 
             detailedResponses.add(map);

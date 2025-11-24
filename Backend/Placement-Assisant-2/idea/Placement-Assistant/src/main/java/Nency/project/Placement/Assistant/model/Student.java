@@ -22,6 +22,7 @@ public class Student {
 
     @Id
     private String id;
+    @Field("userID")
     private String userId;
     private int eno;
     private String name;
