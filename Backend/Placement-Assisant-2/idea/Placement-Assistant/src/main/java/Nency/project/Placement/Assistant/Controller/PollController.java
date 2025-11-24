@@ -1,6 +1,8 @@
 package Nency.project.Placement.Assistant.Controller;
 
 import Nency.project.Placement.Assistant.model.Poll;
+import Nency.project.Placement.Assistant.model.PollResponse;
+import Nency.project.Placement.Assistant.repository.PollResponseRepository;
 import Nency.project.Placement.Assistant.service.PollService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,11 @@ import java.util.List;
 public class PollController {
 
     private final PollService pollService;
+    private final PollResponseRepository pollResponseRepository;
 
-    public PollController(PollService pollService) {
+    public PollController(PollService pollService, PollResponseRepository pollResponseRepository) {
         this.pollService = pollService;
+        this.pollResponseRepository = pollResponseRepository;
     }
 
     // Create a poll
@@ -53,4 +57,25 @@ public class PollController {
             return ResponseEntity.status(500).body("Error stopping poll: " + e.getMessage());
         }
     }
+    @PostMapping("/submit/{pollId}")
+    public ResponseEntity<?> submitPollResponse(@PathVariable String pollId,
+                                                @RequestBody PollResponse response) {
+        try {
+            // Attach pollId
+            response.setPollId(pollId);
+            // Save response
+            PollResponse saved = pollResponseRepository.save(response);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error submitting poll response: " + e.getMessage());
+        }
+    }
+
+    // Optional: Get all responses for a poll
+    @GetMapping("/responses/{pollId}")
+    public ResponseEntity<List<PollResponse>> getPollResponses(@PathVariable String pollId) {
+        return ResponseEntity.ok(pollResponseRepository.findByPollId(pollId));
+    }
+
 }
