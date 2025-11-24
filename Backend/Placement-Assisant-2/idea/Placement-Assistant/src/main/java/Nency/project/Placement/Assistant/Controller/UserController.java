@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002","https://placement-assistant-system.vercel.app"},allowedHeaders = "*", allowCredentials = "true")
 @RestController
@@ -42,6 +43,8 @@ public class UserController {
     }
     @Autowired
     private AdminRepository adminRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
 
     //    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -99,9 +102,11 @@ public List<User> getAllUsers() {
         // 2. If not admin, check Student(User) collection
         User user = userRepository.findByEmail(loginRequest.getEmail());
         if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
+            Optional<Student> studentOptional = studentRepository.findByEmail(loginRequest.getEmail());
+            Student student = studentOptional.get();
             Map<String, Object> response = new HashMap<>();
             response.put("user", Map.of(
-                    "id", user.getId(),
+                    "id",student != null ? student.getId() : null,
                     "name", user.getName(),
                     "email", user.getEmail(),
                     "eno", user.getEno(),
