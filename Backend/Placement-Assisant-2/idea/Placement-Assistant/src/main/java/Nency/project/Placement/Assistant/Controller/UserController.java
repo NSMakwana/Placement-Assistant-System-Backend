@@ -80,25 +80,7 @@ public List<User> getAllUsers() {
         return ResponseEntity.ok("Signup successful! Please log in.");
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-//        // Simple lookup of the user
-//        User user = userRepository.findByEmail(loginRequest.getEmail());
-//        // Compare plain text passwords directly
-//        if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("user", new User(
-//                    user.getEmail(),
-//                    user.getRole(),
-//                    user.getName(),
-//                    user.getEno(),
-//                    user.isHasSubmittedAgreement()
-//            ));
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.status(401).body("Invalid email or password");
-//        }
-//    }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -119,7 +101,6 @@ public List<User> getAllUsers() {
         if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
             Map<String, Object> response = new HashMap<>();
             response.put("user", Map.of(
-                    "id",user.getId(),
                     "name", user.getName(),
                     "email", user.getEmail(),
                     "eno", user.getEno(),
