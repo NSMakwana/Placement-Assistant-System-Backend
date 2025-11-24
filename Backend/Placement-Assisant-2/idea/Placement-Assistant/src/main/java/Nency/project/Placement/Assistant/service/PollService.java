@@ -37,7 +37,7 @@ public class PollService {
             n.setTitle("New Poll from " + poll.getCompanyName());
             n.setMessage(poll.getQuestion());
             n.setPollId(savedPoll.getId());
-            n.setStudentId(s.getId()); // assign student ID for notification
+            n.setStudentId(s.getUserId());
             n.setRead(false);
             notificationRepository.save(n);
         }

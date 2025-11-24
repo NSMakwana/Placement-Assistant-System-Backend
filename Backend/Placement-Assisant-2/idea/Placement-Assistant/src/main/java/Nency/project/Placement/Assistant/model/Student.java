@@ -70,6 +70,15 @@ public class Student {
     }
     //getters and setters
 
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getId() {
         return id;
     }
