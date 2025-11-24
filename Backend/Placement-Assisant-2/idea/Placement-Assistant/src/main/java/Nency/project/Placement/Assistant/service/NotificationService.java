@@ -1,7 +1,10 @@
 package Nency.project.Placement.Assistant.service;
 
 import Nency.project.Placement.Assistant.model.Notification;
+import Nency.project.Placement.Assistant.model.Poll;
+import Nency.project.Placement.Assistant.model.Student;
 import Nency.project.Placement.Assistant.repository.NotificationRepository;
+import Nency.project.Placement.Assistant.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,4 +32,20 @@ public class NotificationService {
             repo.save(n);
         });
     }
+    public void sendPollNotificationToBatch(Poll poll) {
+
+        List<Student> students = StudentRepository.findByBatch(poll.getBatch());
+
+        for (Student s : students) {
+            Notification n = new Notification();
+            n.setTitle("New Poll from " + poll.getCompanyName());
+            n.setMessage(poll.getQuestion());
+            n.setStudentId(s.getId());
+            n.setPollId(poll.getId());  
+            n.setRead(false);
+
+            repo.save(n);
+        }
+    }
+
 }

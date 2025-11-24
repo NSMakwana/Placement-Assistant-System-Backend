@@ -13,6 +13,7 @@ public class Notification {
     private String id;
     private String title;
     private String message;
+    private String pollId;
     private String studentId; // optional: null for all
     private boolean read;
     private LocalDateTime createdAt = LocalDateTime.now();
