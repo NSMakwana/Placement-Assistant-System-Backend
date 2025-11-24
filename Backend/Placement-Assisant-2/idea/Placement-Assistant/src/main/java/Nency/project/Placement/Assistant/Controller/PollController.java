@@ -120,8 +120,9 @@ public class PollController {
             Map<String, Object> map = new HashMap<>();
             map.put("answer", r.getAnswer());
 
-            // Fetch student details from Student table
-            Student student = studentRepository.findById(r.getStudentId()).orElse(null);
+            // Fetch student details from Student table using userId
+            Student student = studentRepository.findByUserId(r.getStudentId());
+
             if (student != null) {
                 map.put("studentName", student.getName());
                 map.put("email", student.getEmail());
