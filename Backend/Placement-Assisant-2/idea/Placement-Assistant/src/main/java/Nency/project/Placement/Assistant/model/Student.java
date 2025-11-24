@@ -22,6 +22,7 @@ public class Student {
 
     @Id
     private String id;
+    private String userId;
     private int eno;
     private String name;
     private String course;

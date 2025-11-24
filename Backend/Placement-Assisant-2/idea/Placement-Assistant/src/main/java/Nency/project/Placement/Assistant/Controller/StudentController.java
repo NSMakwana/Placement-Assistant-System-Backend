@@ -133,6 +133,16 @@ public class StudentController {
         return ResponseEntity.ok(savedStudent);
     }
 
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<?> getStudentByUserId(@PathVariable String userId) {
+        Student student = studentRepository.findByUserId(userId);
+        if (student == null) {
+            return ResponseEntity.status(404).body("Student not found");
+        }
+        return ResponseEntity.ok(student);
+    }
+
+
 }
 
 

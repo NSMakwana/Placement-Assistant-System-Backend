@@ -13,6 +13,9 @@ public class PollResponse {
     private String studentId;
     private String studentName;
     private String answer;
+    private String course;
+    private String email;
+
     private LocalDateTime submittedAt = LocalDateTime.now();
 
     public String getId() {
@@ -61,6 +64,22 @@ public class PollResponse {
 
     public void setSubmittedAt(LocalDateTime submittedAt) {
         this.submittedAt = submittedAt;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 // getters and setters
