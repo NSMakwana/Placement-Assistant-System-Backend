@@ -77,5 +77,19 @@ public class PollController {
     public ResponseEntity<List<PollResponse>> getPollResponses(@PathVariable String pollId) {
         return ResponseEntity.ok(pollResponseRepository.findByPollId(pollId));
     }
+    // Get poll by ID
+    @GetMapping("/{pollId}")
+    public ResponseEntity<?> getPollById(@PathVariable String pollId) {
+        try {
+            Poll poll = pollService.getPollById(pollId);
+            if (poll == null) {
+                return ResponseEntity.status(404).body("Poll not found");
+            }
+            return ResponseEntity.ok(poll);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching poll: " + e.getMessage());
+        }
+    }
+
 
 }
