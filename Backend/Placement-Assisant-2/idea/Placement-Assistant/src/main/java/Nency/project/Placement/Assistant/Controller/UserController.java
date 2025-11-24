@@ -101,6 +101,7 @@ public List<User> getAllUsers() {
         if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
             Map<String, Object> response = new HashMap<>();
             response.put("user", Map.of(
+                    "id", user.getId(),
                     "name", user.getName(),
                     "email", user.getEmail(),
                     "eno", user.getEno(),
