@@ -7,7 +7,11 @@ import Nency.project.Placement.Assistant.service.PollService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002","https://placement-assistant-system.vercel.app"}, allowedHeaders = "*")
 @RestController
@@ -76,6 +80,31 @@ public class PollController {
     @GetMapping("/responses/{pollId}")
     public ResponseEntity<List<PollResponse>> getPollResponses(@PathVariable String pollId) {
         return ResponseEntity.ok(pollResponseRepository.findByPollId(pollId));
+    }
+    @GetMapping("/results/{pollId}")
+    public ResponseEntity<?> getPollResults(@PathVariable String pollId) {
+        List<PollResponse> responses = pollResponseRepository.findByPollId(pollId);
+
+        // Group by answer → count per option
+        Map<String, Long> aggregated =
+                responses.stream().collect(
+                        Collectors.groupingBy(
+                                PollResponse::getAnswer,
+                                Collectors.counting()
+                        )
+                );
+
+        // Convert map → array list
+        List<Map<String, Object>> resultList = new ArrayList<>();
+
+        aggregated.forEach((option, count) -> {
+            Map<String, Object> entry = new HashMap<>();
+            entry.put("option", option);
+            entry.put("count", count);
+            resultList.add(entry);
+        });
+
+        return ResponseEntity.ok(resultList);
     }
     // Get poll by ID
     @GetMapping("/{pollId}")
