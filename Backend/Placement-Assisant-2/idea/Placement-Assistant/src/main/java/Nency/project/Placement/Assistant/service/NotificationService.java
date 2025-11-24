@@ -13,11 +13,11 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository repo;
-    private final StudentRepository studentRepo;
+    private final StudentRepository studentRepository;
 
-    public NotificationService(NotificationRepository repo, StudentRepository studentRepo) {
+    public NotificationService(NotificationRepository repo, StudentRepository studentRepository) {
         this.repo = repo;
-        this.studentRepo = studentRepo;
+        this.studentRepository = studentRepository;
     }
 
     public Notification createNotification(Notification notification) {
@@ -37,9 +37,7 @@ public class NotificationService {
     }
 
     public void sendPollNotificationToBatch(Poll poll) {
-
-        // ✔ Correct repository usage
-        List<Student> students = studentRepo.findByBatch(poll.getBatch());
+        List<Student> students = studentRepository.findByBatch(poll.getBatch()); // correct
 
         for (Student s : students) {
             Notification n = new Notification();
@@ -48,7 +46,6 @@ public class NotificationService {
             n.setStudentId(s.getId());
             n.setPollId(poll.getId());
             n.setRead(false);
-
             repo.save(n);
         }
     }

@@ -1,7 +1,8 @@
-package Nency.project.Placement.Assistant.controller;
+package Nency.project.Placement.Assistant.Controller;
 
 import Nency.project.Placement.Assistant.model.Poll;
 import Nency.project.Placement.Assistant.model.PollResponse;
+import Nency.project.Placement.Assistant.service.NotificationService;
 import Nency.project.Placement.Assistant.service.PollService;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,15 +14,22 @@ import java.util.List;
 public class PollController {
 
     private final PollService pollService;
+    private final NotificationService notificationService;
 
-    public PollController(PollService pollService) {
+    public PollController(PollService pollService ,NotificationService notificationService) {
         this.pollService = pollService;
+        this.notificationService = notificationService;
     }
 
     // ✔ CREATE POLL
     @PostMapping("/create")
     public Poll createPoll(@RequestBody Poll poll) {
-        return pollService.savePoll(poll);
+        Poll savedPoll = pollService.savePoll(poll);
+
+        // send poll notification to all students in the batch
+        notificationService.sendPollNotificationToBatch(savedPoll);
+
+        return savedPoll;
     }
 
     // ✔ LIST ALL POLLS (used in your frontend)
