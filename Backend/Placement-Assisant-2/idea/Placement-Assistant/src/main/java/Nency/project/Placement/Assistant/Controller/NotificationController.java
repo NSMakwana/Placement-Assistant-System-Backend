@@ -1,4 +1,4 @@
-package Nency.project.Placement.Assistant.controller;
+package Nency.project.Placement.Assistant.Controller;
 
 import Nency.project.Placement.Assistant.model.Notification;
 import Nency.project.Placement.Assistant.service.NotificationService;

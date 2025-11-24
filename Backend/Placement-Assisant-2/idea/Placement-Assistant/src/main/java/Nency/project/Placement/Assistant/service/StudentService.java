@@ -59,6 +59,10 @@ public class StudentService {
     public List<Student> searchStudentsByName(String name) {
         return studentRepository.findByNameContainingIgnoreCase(name);
     }
+    public Student saveStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
 
     // Fetch students by batch
     public List<Student> getStudentsByBatch(String batch) {

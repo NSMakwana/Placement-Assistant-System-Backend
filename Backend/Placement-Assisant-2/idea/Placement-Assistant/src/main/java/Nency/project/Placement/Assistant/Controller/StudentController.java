@@ -127,6 +127,12 @@ public class StudentController {
                     .body("Student not found");
         }
     }
+    @PostMapping
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        Student savedStudent = studentService.saveStudent(student);
+        return ResponseEntity.ok(savedStudent);
+    }
+
 }
 
 
