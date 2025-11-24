@@ -106,7 +106,7 @@ public List<User> getAllUsers() {
             Student student = studentOptional.get();
             Map<String, Object> response = new HashMap<>();
             response.put("user", Map.of(
-                    "id",student != null ? student.getId() : null,
+                    "id",user.getId(),
                     "name", user.getName(),
                     "email", user.getEmail(),
                     "eno", user.getEno(),
