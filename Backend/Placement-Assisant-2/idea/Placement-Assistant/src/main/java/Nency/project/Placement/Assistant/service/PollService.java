@@ -47,4 +47,17 @@ public class PollService {
         }
         return responseRepository.save(r);
     }
+    public List<Poll> getAllPolls() {
+        return pollRepository.findAll();
+    }
+
+    public Poll stopPoll(String pollId) {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll != null) {
+            poll.setActive(false);
+            pollRepository.save(poll);
+        }
+        return poll;
+    }
+
 }

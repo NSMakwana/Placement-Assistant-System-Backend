@@ -15,7 +15,18 @@ public class Poll {
     private String question;
     private List<String> options;
     private String batch;
+    private boolean isActive = true;
     private LocalDateTime createdAt = LocalDateTime.now();
+
+
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 
     public String getId() {
         return id;

@@ -38,7 +38,7 @@ public class NotificationService {
 
     public void sendPollNotificationToBatch(Poll poll) {
 
-        // ✔ FIXED — use injected studentRepo instead of static call
+        // ✔ Correct repository usage
         List<Student> students = studentRepo.findByBatch(poll.getBatch());
 
         for (Student s : students) {

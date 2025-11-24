@@ -1,59 +1,44 @@
-package Nency.project.Placement.Assistant.Controller;
+package Nency.project.Placement.Assistant.controller;
+
 import Nency.project.Placement.Assistant.model.Poll;
 import Nency.project.Placement.Assistant.model.PollResponse;
 import Nency.project.Placement.Assistant.service.PollService;
-import Nency.project.Placement.Assistant.service.NotificationService; // example usage
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Map;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/polls")
+@CrossOrigin
 public class PollController {
+
     private final PollService pollService;
-    private final NotificationService notificationService; // you already have notifications — use it
 
-
-    public PollController(PollService pollService, NotificationService notificationService) {
+    public PollController(PollService pollService) {
         this.pollService = pollService;
-        this.notificationService = notificationService;
     }
 
-
+    // ✔ CREATE POLL
     @PostMapping("/create")
-    public ResponseEntity<?> createPoll(@RequestBody Poll poll) {
-// save poll
-        Poll saved = pollService.savePoll(poll);
-
-
-// send notification to students of batch
-// This method assumes NotificationService has a helper to create per-student notifications by batch
-        notificationService.sendPollNotificationToBatch(saved);
-
-
-        return ResponseEntity.ok(Map.of("message","Poll created","pollId", saved.getId()));
+    public Poll createPoll(@RequestBody Poll poll) {
+        return pollService.savePoll(poll);
     }
 
+    // ✔ LIST ALL POLLS (used in your frontend)
+    @GetMapping("/all")
+    public List<Poll> getAllPolls() {
+        return pollService.getAllPolls();
+    }
 
+    // ✔ GET ONE POLL BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPoll(@PathVariable String id) {
-        return pollService.getPoll(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Poll getPollById(@PathVariable String id) {
+        return pollService.getPoll(id).orElse(null);
     }
 
-
-    @PostMapping("/submit")
-    public ResponseEntity<?> submitResponse(@RequestBody PollResponse response) {
-        PollResponse saved = pollService.submitResponse(response);
-        return ResponseEntity.ok(saved);
-    }
-
-
-    @GetMapping("/responses/{pollId}")
-    public ResponseEntity<List<PollResponse>> getResponses(@PathVariable String pollId) {
-        return ResponseEntity.ok(pollService.getResponses(pollId));
+    // ✔ STOP POLL (used by Stop button)
+    @PutMapping("/stop/{pollId}")
+    public Poll stopPoll(@PathVariable String pollId) {
+        return pollService.stopPoll(pollId);
     }
 }
