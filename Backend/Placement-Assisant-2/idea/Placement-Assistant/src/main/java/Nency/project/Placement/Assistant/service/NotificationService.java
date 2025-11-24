@@ -11,10 +11,13 @@ import java.util.List;
 
 @Service
 public class NotificationService {
-    private final NotificationRepository repo;
 
-    public NotificationService(NotificationRepository repo) {
+    private final NotificationRepository repo;
+    private final StudentRepository studentRepo;
+
+    public NotificationService(NotificationRepository repo, StudentRepository studentRepo) {
         this.repo = repo;
+        this.studentRepo = studentRepo;
     }
 
     public Notification createNotification(Notification notification) {
@@ -32,16 +35,18 @@ public class NotificationService {
             repo.save(n);
         });
     }
+
     public void sendPollNotificationToBatch(Poll poll) {
 
-        List<Student> students = StudentRepository.findByBatch(poll.getBatch());
+        // ✔ FIXED — use injected studentRepo instead of static call
+        List<Student> students = studentRepo.findByBatch(poll.getBatch());
 
         for (Student s : students) {
             Notification n = new Notification();
             n.setTitle("New Poll from " + poll.getCompanyName());
             n.setMessage(poll.getQuestion());
             n.setStudentId(s.getId());
-            n.setPollId(poll.getId());  
+            n.setPollId(poll.getId());
             n.setRead(false);
 
             repo.save(n);

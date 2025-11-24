@@ -13,7 +13,7 @@ public interface StudentRepository extends MongoRepository<Student, String> {
 
     Optional<Student> findByEmail(String email) ;
     // Custom query methods
-    static List<Student> findByBatch(String batch); // Find students by batch
+    List<Student> findByBatch(String batch); // Find students by batch
     List<Student> findByCourse(String course); // Find students by course
     List<Student> findByBatchAndCourse(String batch, String course); // Find by both
 
