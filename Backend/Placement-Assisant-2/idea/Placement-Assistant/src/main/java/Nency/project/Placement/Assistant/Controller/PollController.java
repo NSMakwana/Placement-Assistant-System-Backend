@@ -71,12 +71,7 @@ public class PollController {
         try {
             // Attach pollId
             response.setPollId(pollId);
-            Student student = studentRepository.findByUserId(response.getStudentId());
-            if (student != null) {
-                response.setStudentId(student.getId()); // save the Student _id
-            } else {
-                return ResponseEntity.status(404).body("Student not found");
-            }
+            
             // Save response
             PollResponse saved = pollResponseRepository.save(response);
             return ResponseEntity.ok(saved);
@@ -127,7 +122,7 @@ public class PollController {
             map.put("answer", r.getAnswer());
 
             // Fetch student details from Student table using stored Student _id
-            Student student = studentRepository.findById(r.getStudentId()).orElse(null);
+            Student student = studentRepository.findByUserId(r.getStudentId());
             if (student != null) {
                 map.put("studentName", student.getName());
                 map.put("email", student.getEmail());
