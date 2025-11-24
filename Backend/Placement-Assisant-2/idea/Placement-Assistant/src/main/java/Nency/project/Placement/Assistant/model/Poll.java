@@ -17,24 +17,13 @@ public class Poll {
     private String question;
     private List<String> options;
     private String batch;
+    private String targetBatch;
 
     private boolean isActive = true; // default active
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Constructors
-    public Poll() {}
-
-    public Poll(String companyId, String companyName, String question, List<String> options, String batch) {
-        this.companyId = companyId;
-        this.companyName = companyName;
-        this.question = question;
-        this.options = options;
-        this.batch = batch;
-        this.isActive = true;
-        this.createdAt = LocalDateTime.now();
-    }
-
     // Getters & Setters
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -58,4 +47,28 @@ public class Poll {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-}
+
+
+    public String getTargetBatch() {
+        return targetBatch;
+    }
+
+    public void setTargetBatch(String targetBatch) {
+        this.targetBatch = targetBatch;
+    }
+
+    // Constructors
+    public Poll() {}
+
+    public Poll(String companyId, String companyName, String question, List<String> options, String batch) {
+        this.companyId = companyId;
+        this.companyName = companyName;
+        this.question = question;
+        this.options = options;
+        this.batch = batch;
+        this.isActive = true;
+        this.createdAt = LocalDateTime.now();
+    }
+
+
+  }

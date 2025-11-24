@@ -37,14 +37,15 @@ public class NotificationService {
     }
 
     public void sendPollNotificationToBatch(Poll poll) {
-        List<Student> students = studentRepository.findByBatch(poll.getBatch()); // correct
+        // Fetch students of the target batch
+        List<Student> students = studentRepository.findByBatch(poll.getBatch());
 
         for (Student s : students) {
             Notification n = new Notification();
             n.setTitle("New Poll from " + poll.getCompanyName());
             n.setMessage(poll.getQuestion());
-            n.setStudentId(s.getId());
             n.setPollId(poll.getId());
+            n.setStudentId(s.getId()); // individual student mapping to show in their notifications
             n.setRead(false);
             repo.save(n);
         }
