@@ -2,7 +2,9 @@ package Nency.project.Placement.Assistant.Controller;
 
 import Nency.project.Placement.Assistant.model.Poll;
 import Nency.project.Placement.Assistant.model.PollResponse;
+import Nency.project.Placement.Assistant.model.Student;
 import Nency.project.Placement.Assistant.repository.PollResponseRepository;
+import Nency.project.Placement.Assistant.repository.StudentRepository;
 import Nency.project.Placement.Assistant.service.PollService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +22,12 @@ public class PollController {
 
     private final PollService pollService;
     private final PollResponseRepository pollResponseRepository;
+    private final StudentRepository studentRepository;
 
-    public PollController(PollService pollService, PollResponseRepository pollResponseRepository) {
+    public PollController(PollService pollService, PollResponseRepository pollResponseRepository,StudentRepository studentRepository) {
         this.pollService = pollService;
         this.pollResponseRepository = pollResponseRepository;
+        this.studentRepository = studentRepository;
     }
 
     // Create a poll
@@ -106,6 +110,34 @@ public class PollController {
 
         return ResponseEntity.ok(resultList);
     }
+    @GetMapping("/responses/detailed/{pollId}")
+    public ResponseEntity<?> getDetailedPollResponses(@PathVariable String pollId) {
+        List<PollResponse> responses = pollResponseRepository.findByPollId(pollId);
+
+        List<Map<String, Object>> detailedResponses = new ArrayList<>();
+
+        for (PollResponse r : responses) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("answer", r.getAnswer());
+
+            // Fetch student details from Student table
+            Student student = studentRepository.findById(r.getStudentId()).orElse(null);
+            if (student != null) {
+                map.put("studentName", student.getName());
+                map.put("email", student.getEmail());
+                map.put("course", student.getCourse());
+            } else {
+                map.put("studentName", "Unknown");
+                map.put("email", "Unknown");
+                map.put("course", "Unknown");
+            }
+
+            detailedResponses.add(map);
+        }
+
+        return ResponseEntity.ok(detailedResponses);
+    }
+
     // Get poll by ID
     @GetMapping("/{pollId}")
     public ResponseEntity<?> getPollById(@PathVariable String pollId) {
