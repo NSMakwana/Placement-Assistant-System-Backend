@@ -116,7 +116,7 @@ public class StudentController {
         return "Total students in database: " + count;
     }
 
-    @GetMapping("/batchByEmail/{emil}")
+    @GetMapping("/batchByEmail/{email}")
     public ResponseEntity<?> getBatchByEmail(@PathVariable String email) {
         Optional<Student> studentOpt = studentRepository.findByEmail(email);
         if (studentOpt.isPresent()) {
