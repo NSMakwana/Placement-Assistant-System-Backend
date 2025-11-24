@@ -1,10 +1,7 @@
 package Nency.project.Placement.Assistant.service;
 
 import Nency.project.Placement.Assistant.model.Notification;
-import Nency.project.Placement.Assistant.model.Poll;
-import Nency.project.Placement.Assistant.model.Student;
 import Nency.project.Placement.Assistant.repository.NotificationRepository;
-import Nency.project.Placement.Assistant.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,42 +10,27 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository repo;
-    private final StudentRepository studentRepository;
 
-    public NotificationService(NotificationRepository repo, StudentRepository studentRepository) {
+    public NotificationService(NotificationRepository repo) {
         this.repo = repo;
-        this.studentRepository = studentRepository;
     }
 
+    // Create a notification
     public Notification createNotification(Notification notification) {
         notification.setRead(false);
         return repo.save(notification);
     }
 
+    // Get notifications for a student (or general notifications)
     public List<Notification> getStudentNotifications(String studentId) {
         return repo.findByStudentIdOrStudentIdIsNullOrderByCreatedAtDesc(studentId);
     }
 
+    // Mark a notification as read
     public void markAsRead(String notificationId) {
         repo.findById(notificationId).ifPresent(n -> {
             n.setRead(true);
             repo.save(n);
         });
     }
-
-    public void sendPollNotificationToBatch(Poll poll) {
-        // Fetch students of the target batch
-        List<Student> students = studentRepository.findByBatch(poll.getBatch());
-
-        for (Student s : students) {
-            Notification n = new Notification();
-            n.setTitle("New Poll from " + poll.getCompanyName());
-            n.setMessage(poll.getQuestion());
-            n.setPollId(poll.getId());
-            n.setStudentId(s.getId()); // individual student mapping to show in their notifications
-            n.setRead(false);
-            repo.save(n);
-        }
-    }
-
 }
