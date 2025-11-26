@@ -1,4 +1,4 @@
-package Nency.project.Placement.Assistant.controller;
+package Nency.project.Placement.Assistant.Controller;
 
 import Nency.project.Placement.Assistant.model.ChatMessage;
 import Nency.project.Placement.Assistant.model.User;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3002","https://placement-assistant-system.vercel.app"},allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
