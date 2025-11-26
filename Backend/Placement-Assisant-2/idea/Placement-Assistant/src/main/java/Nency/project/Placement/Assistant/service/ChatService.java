@@ -28,4 +28,8 @@ public class ChatService {
     public List<ChatMessage> getUserMessages(String userId) {
         return repo.findBySenderIdOrReceiverIdOrderByCreatedAtDesc(userId, userId);
     }
+
+    public void deleteMessage(String messageId) {
+        repo.deleteById(messageId);
+    }
 }
