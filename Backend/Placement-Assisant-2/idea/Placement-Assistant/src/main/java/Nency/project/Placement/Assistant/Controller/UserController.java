@@ -88,10 +88,12 @@ public List<User> getAllUsers() {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         // 1. Check Admin collection first
+        User auser = userRepository.findByEmail(loginRequest.getEmail());
         Admin admin = adminRepository.findByEmail(loginRequest.getEmail());
         if (admin != null && admin.getPassword().equals(loginRequest.getPassword())) {
             Map<String, Object> response = new HashMap<>();
             response.put("user", Map.of(
+                    "id",auser.getId(),
                     "name", admin.getName(),
                     "email", admin.getEmail(),
                     "role", admin.getRole() // superadmin | admin | subadmin
