@@ -1,29 +1,31 @@
 package Nency.project.Placement.Assistant.service;
 
-
-
 import Nency.project.Placement.Assistant.model.ChatMessage;
 import Nency.project.Placement.Assistant.repository.ChatMessageRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ChatService {
 
-    private final ChatMessageRepository chatMessageRepository;
+    private final ChatMessageRepository repo;
 
-    public ChatMessage sendMessage(ChatMessage message) {
-        return chatMessageRepository.save(message);
+    public ChatService(ChatMessageRepository repo) {
+        this.repo = repo;
     }
 
-    public List<ChatMessage> getMessages(String senderId, String receiverId) {
-        return chatMessageRepository
-                .findBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByTimestampAsc(
-                        senderId, receiverId,
-                        senderId, receiverId
-                );
+    public ChatMessage save(ChatMessage msg) {
+        return repo.save(msg);
+    }
+
+    public List<ChatMessage> getConversation(String u1, String u2) {
+        return repo.findBySenderIdAndReceiverIdOrSenderIdAndReceiverIdOrderByCreatedAtAsc(
+                u1, u2, u2, u1
+        );
+    }
+
+    public List<ChatMessage> getUserMessages(String userId) {
+        return repo.findBySenderIdOrReceiverIdOrderByCreatedAtDesc(userId, userId);
     }
 }
