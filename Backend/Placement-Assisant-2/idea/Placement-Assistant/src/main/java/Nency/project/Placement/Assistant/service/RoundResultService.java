@@ -18,18 +18,18 @@ public class RoundResultService {
     private final RoundRepository roundRepo;
     private final StudentRepository studentRepo;
     private final NotificationService notificationService;
-    private final EmailService emailService; // interface you implement
+
 
     public RoundResultService(RoundResultRepository resultRepo,
                               RoundRepository roundRepo,
                               StudentRepository studentRepo,
-                              NotificationService notificationService,
-                              EmailService emailService) {
+                              NotificationService notificationService
+                              ) {
         this.resultRepo = resultRepo;
         this.roundRepo = roundRepo;
         this.studentRepo = studentRepo;
         this.notificationService = notificationService;
-        this.emailService = emailService;
+
     }
 
     // Stage 1: save selection (bulk) — mark students as "Cleared" for this round
@@ -94,7 +94,7 @@ public class RoundResultService {
                 String body = String.format("Dear %s,\n\nYou have been placed in %s for %s.\nMarks: %s\nRemarks: %s\n\nRegards",
                         input.getStudentName(), getCompanyName(input.getCompanyId()), input.getDesignation(),
                         input.getMarks(), input.getRemarks());
-                emailService.sendEmail(input.getStudentEmail(), subject, body);
+
             } else {
                 input.setPlacementStatus("Not Placed");
                 // update student
@@ -113,7 +113,7 @@ public class RoundResultService {
                 String subject = "Final Round Result - " + getCompanyName(input.getCompanyId());
                 String body = String.format("Dear %s,\n\nYou were not selected in the final round for %s (%s).\nRemarks: %s\n\nRegards",
                         input.getStudentName(), getCompanyName(input.getCompanyId()), input.getDesignation(), input.getRemarks());
-                emailService.sendEmail(input.getStudentEmail(), subject, body);
+
             }
         } else {
             input.setPlacementStatus("Pending");
@@ -130,7 +130,7 @@ public class RoundResultService {
             String body = String.format("Dear %s,\n\nYour result for %s is: %s\nMarks: %s\nRemarks: %s\n\nRegards",
                     input.getStudentName(), input.getRoundName(), input.getStatus(), input.getMarks(), input.getRemarks());
             // optional: send email for non-final rounds
-            emailService.sendEmail(input.getStudentEmail(), subject, body);
+
         }
 
         input.setSubmittedAt(Instant.now());
