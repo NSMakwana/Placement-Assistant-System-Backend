@@ -240,6 +240,8 @@ public class Company {
         }
 
         public static class PlacementProcess {
+            @Id
+            private String id;
             private int roundNumber;
             private String round;
             private String description;

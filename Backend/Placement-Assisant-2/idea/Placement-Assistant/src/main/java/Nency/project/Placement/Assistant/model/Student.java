@@ -45,6 +45,28 @@ public class Student {
     private int drops;
     private String remarks;
 
+
+
+    private String placement_status;
+
+    public String getPlacedCompanyId() {
+        return placedCompanyId;
+    }
+
+    public void setPlacedCompanyId(String placedCompanyId) {
+        this.placedCompanyId = placedCompanyId;
+    }
+
+    public String getPlacedDesignation() {
+        return placedDesignation;
+    }
+
+    public void setPlacedDesignation(String placedDesignation) {
+        this.placedDesignation = placedDesignation;
+    }
+
+    private String placedCompanyId;
+    private String placedDesignation;
     public String getPlacement_status() {
         return placement_status;
     }
@@ -53,7 +75,6 @@ public class Student {
         this.placement_status = placement_status;
     }
 
-    private String placement_status;
 
     // Utility method to parse date from a string
     public void setDobFromString(String dateString) {
