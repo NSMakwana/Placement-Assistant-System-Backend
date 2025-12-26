@@ -145,7 +145,6 @@ public class Company {
         private String designation;
         private String email;
         private String mobile;
-
         // Getters and Setters
 
         public String getName() {

@@ -66,7 +66,7 @@ public class CompanyService {
         return company.get().getDesignations().stream()
                 .filter(d -> d.getDesignation().equalsIgnoreCase(designation))
                 .flatMap(d -> d.getPlacementProcess().stream())
-                .map(p -> Map.of("roundId", p.getId(),"round", p.getRound()))
+                .map(p -> Map.of("round", p.getRound()))
                 .toList();
     }
     public Company saveCompany(Company company) {
