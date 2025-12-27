@@ -28,17 +28,26 @@ public class ApplicationController {
             @PathVariable String companyId,
             @PathVariable String designation) {
 
+        System.out.println("Fetching applications for companyId: " + companyId + ", designation: " + designation);
+
         List<Application> applications = applicationRepository.findByCompanyIdAndDesignation(companyId, designation);
 
         if (applications == null || applications.isEmpty()) {
-            return Collections.emptyList();  // <-- return empty array
+            System.out.println("No applications found");
+            return Collections.emptyList();
         }
+
+        System.out.println("Applications found: " + applications.size());
+
         List<String> studentIds = applications.stream()
                 .map(Application::getStudentId)
                 .toList();
 
+        System.out.println("Student IDs: " + studentIds);
+
         return userRepository.findAllById(studentIds);
     }
+
 
     @PostMapping("/apply")
     public void apply(@RequestBody Application app) {
