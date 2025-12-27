@@ -14,7 +14,7 @@ public class Application {
     private String studentEmail;
 
     private String companyId;
-    private String designationId;
+    private String designation;
 
     // getters & setters
 
@@ -59,11 +59,11 @@ public class Application {
         this.companyId = companyId;
     }
 
-    public String getDesignationId() {
-        return designationId;
+    public String getDesignation(){
+        return designation;
     }
 
-    public void setDesignationId(String designationId) {
-        this.designationId = designationId;
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 }

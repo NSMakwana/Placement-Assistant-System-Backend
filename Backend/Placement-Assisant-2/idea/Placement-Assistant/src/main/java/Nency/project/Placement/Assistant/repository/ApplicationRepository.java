@@ -8,8 +8,8 @@ import java.util.List;
 public interface ApplicationRepository
         extends MongoRepository<Application, String> {
 
-    List<Application> findByCompanyIdAndDesignationId(
+    List<Application> findByCompanyIdAndDesignation(
             String companyId,
-            String designationId
+            String designation
     );
 }
