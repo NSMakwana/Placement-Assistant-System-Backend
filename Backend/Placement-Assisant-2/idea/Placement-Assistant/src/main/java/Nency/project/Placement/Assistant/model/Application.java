@@ -8,7 +8,6 @@ public class Application {
 
     @Id
     private String id;
-
     private String studentId;
     private String studentName;
     private String studentEmail;

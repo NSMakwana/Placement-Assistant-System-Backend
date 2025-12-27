@@ -28,14 +28,11 @@ public class ApplicationController {
             @PathVariable String companyId,
             @PathVariable String designation) {
 
-        List<Application> applications =
-                applicationRepository
-                        .findByCompanyIdAndDesignation(companyId, designation);
+        List<Application> applications = applicationRepository.findByCompanyIdAndDesignation(companyId, designation);
 
-        if (applications.isEmpty()) {
-            return Collections.emptyList();
+        if (applications == null || applications.isEmpty()) {
+            return Collections.emptyList();  // <-- return empty array
         }
-
         List<String> studentIds = applications.stream()
                 .map(Application::getStudentId)
                 .toList();
