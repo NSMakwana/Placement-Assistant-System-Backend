@@ -1,15 +1,12 @@
 package Nency.project.Placement.Assistant.service;
 
 import Nency.project.Placement.Assistant.model.*;
-import Nency.project.Placement.Assistant.repository.RoundRepository;
 import Nency.project.Placement.Assistant.repository.RoundResultRepository;
 import Nency.project.Placement.Assistant.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RoundResultService {
@@ -26,44 +23,12 @@ public class RoundResultService {
         this.notificationService = notificationService;
     }
 
-    // Stage 1: Selection
-    public List<RoundResult> saveSelection(
-            String companyId,
-            String designation,
-            String batch,
-            String roundNo,
-            String roundName,
-            List<String> studentIds,
-            boolean isFinalRound
-    ) {
-        List<RoundResult> saved = new ArrayList<>();
-
-        for (String sid : studentIds) {
-            Student s = studentRepo.findById(sid).orElse(null);
-
-            RoundResult r = new RoundResult();
-            r.setCompanyId(companyId);
-            r.setDesignation(designation);
-            r.setBatch(batch);
-            r.setRoundNo(roundNo);
-            r.setRoundName(roundName);
-            r.setFinalRound(isFinalRound);
-            r.setStudentId(sid);
-            r.setStudentName(s != null ? s.getName() : null);
-            r.setStudentEmail(s != null ? s.getEmail() : null);
-            r.setStatus("Cleared");
-            r.setPlacementStatus("Pending");
-            r.setSubmittedAt(Instant.now());
-
-            saved.add(resultRepo.save(r));
-        }
-        return saved;
-    }
-
-    // Stage 2: Submit result
+    // Submit result from Page 3
     public RoundResult submitResult(RoundResult input) {
 
+        // Decide placement status
         if (input.isFinalRound()) {
+
             if ("Cleared".equalsIgnoreCase(input.getStatus())) {
                 input.setPlacementStatus("Placed");
 
@@ -74,31 +39,55 @@ public class RoundResultService {
                     studentRepo.save(s);
                 });
 
-                Notification n = new Notification();
-                n.setTitle("Placement Result");
-                n.setMessage("Congratulations! You are placed for " + input.getDesignation());
-                n.setStudentId(input.getStudentId());
-                n.setRead(false);
-                notificationService.createNotification(n);
+                sendNotification(
+                        input,
+                        "Placement Result",
+                        "Congratulations! You are placed in " +
+                                input.getCompanyId() +
+                                " as " + input.getDesignation()
+                );
 
             } else {
                 input.setPlacementStatus("Not Placed");
+
+                studentRepo.findById(input.getStudentId()).ifPresent(s -> {
+                    s.setPlacement_status("Not Placed");
+                    studentRepo.save(s);
+                });
+
+                sendNotification(
+                        input,
+                        "Final Round Result",
+                        "You were not selected in the final round for "
+                                + input.getCompanyId()
+                );
             }
+
         } else {
             input.setPlacementStatus("Pending");
+
+            sendNotification(
+                    input,
+                    "Round Result: " + input.getRoundName(),
+                    "Status: " + input.getStatus()
+                            + (input.getMarks() != null ? "\nMarks: " + input.getMarks() : "")
+            );
         }
 
         input.setSubmittedAt(Instant.now());
         return resultRepo.save(input);
     }
 
-    public List<RoundResult> getResultsForRound(
-            String companyId,
-            String designation,
-            String roundNo
-    ) {
-        return resultRepo.findByCompanyIdAndDesignationAndRoundNo(
-                companyId, designation, roundNo
-        );
+    public List<RoundResult> getResultsByStudent(String studentId) {
+        return resultRepo.findByStudentId(studentId);
+    }
+
+    private void sendNotification(RoundResult input, String title, String message) {
+        Notification n = new Notification();
+        n.setTitle(title);
+        n.setMessage(message);
+        n.setStudentId(input.getStudentId());
+        n.setRead(false);
+        notificationService.createNotification(n);
     }
 }

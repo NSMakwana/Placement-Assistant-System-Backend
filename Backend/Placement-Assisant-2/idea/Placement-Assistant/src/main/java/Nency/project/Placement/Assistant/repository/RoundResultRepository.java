@@ -7,17 +7,11 @@ import java.util.List;
 
 public interface RoundResultRepository extends MongoRepository<RoundResult, String> {
 
-    List<RoundResult> findByCompanyIdAndDesignationAndRoundNo(
-            String companyId,
-            String designation,
-            String roundNo
-    );
-
     List<RoundResult> findByStudentId(String studentId);
 
-    void deleteByCompanyIdAndDesignationAndRoundNo(
+    List<RoundResult> findByCompanyIdAndDesignationAndStudentId(
             String companyId,
             String designation,
-            String roundNo
+            String studentId
     );
 }
