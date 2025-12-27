@@ -239,8 +239,7 @@ public class Company {
         }
 
         public static class PlacementProcess {
-            @Id
-            private String id;
+            
             private int roundNumber;
             private String round;
             private String description;
@@ -248,13 +247,6 @@ public class Company {
             // Getters and Setters
 
 
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
-            }
 
             public int getRoundNumber() {
                 return roundNumber;
