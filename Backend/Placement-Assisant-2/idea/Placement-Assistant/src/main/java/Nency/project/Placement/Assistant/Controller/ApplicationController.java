@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/applications")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3001","http://localhost:3002","http://localhost:3000","https://placement-assistant-system.vercel.app"}, allowedHeaders = "*", allowCredentials = "true")
 public class ApplicationController {
 
     @Autowired
