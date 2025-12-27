@@ -1,8 +1,10 @@
 package Nency.project.Placement.Assistant.Controller;
 
 import Nency.project.Placement.Assistant.model.Application;
+import Nency.project.Placement.Assistant.model.Student;
 import Nency.project.Placement.Assistant.model.User;
 import Nency.project.Placement.Assistant.repository.ApplicationRepository;
+import Nency.project.Placement.Assistant.repository.StudentRepository;
 import Nency.project.Placement.Assistant.repository.UserRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,10 +23,10 @@ public class ApplicationController {
     private ApplicationRepository applicationRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private StudentRepository studentRepository;
 
     @GetMapping("/{companyId}/{designation}")
-    public List<User> getAppliedStudents(
+    public List<Student> getAppliedStudents(
             @PathVariable String companyId,
             @PathVariable String designation) {
 
@@ -45,7 +47,7 @@ public class ApplicationController {
 
         System.out.println("Student IDs: " + studentIds);
 
-        return userRepository.findAllById(studentIds);
+        return studentRepository.findAllById(studentIds);
     }
 
 
