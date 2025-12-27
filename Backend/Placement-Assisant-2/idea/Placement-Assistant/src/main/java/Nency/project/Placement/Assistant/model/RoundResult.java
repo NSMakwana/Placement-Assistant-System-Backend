@@ -17,7 +17,7 @@ public class RoundResult {
     private String designation;
     private String batch;
 
-    private String roundId;       // reference to Round.id
+    private String roundNo;       // reference to Round.id
     private String roundName;     // snapshot/ editable at submission
     private boolean finalRound;   // snapshot of round.isFinalRound at submit time
 
@@ -61,12 +61,12 @@ public class RoundResult {
         this.batch = batch;
     }
 
-    public String getRoundId() {
-        return roundId;
+    public String getRoundNo() {
+        return roundNo;
     }
 
-    public void setRoundId(String roundId) {
-        this.roundId = roundId;
+    public void setRoundNo(String roundNo) {
+        this.roundNo = roundNo;
     }
 
     public String getRoundName() {
