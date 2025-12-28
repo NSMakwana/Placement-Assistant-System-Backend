@@ -6,6 +6,7 @@ import Nency.project.Placement.Assistant.model.User;
 import Nency.project.Placement.Assistant.repository.ApplicationRepository;
 import Nency.project.Placement.Assistant.repository.StudentRepository;
 import Nency.project.Placement.Assistant.repository.UserRepository;
+import Nency.project.Placement.Assistant.service.ApplicationService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,23 @@ public class ApplicationController {
     @Autowired
     private StudentRepository studentRepository;
 
+
+    private final ApplicationService service;
+
+    public ApplicationController(ApplicationService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/apply")
+    public Application apply(@RequestBody Application application) {
+        return service.apply(application);
+    }
+
+    @GetMapping("/student/{studentId}")
+    public List<Application> getStudentApplications(@PathVariable String studentId) {
+        return service.getByStudent(studentId);
+    }
+    
     @GetMapping("/{companyId}/{designation}")
     public List<Student> getAppliedStudents(
             @PathVariable String companyId,
@@ -51,10 +69,7 @@ public class ApplicationController {
     }
 
 
-    @PostMapping("/apply")
-    public void apply(@RequestBody Application app) {
-        applicationRepository.save(app);
-    }
+
 
 }
 

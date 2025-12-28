@@ -16,6 +16,6 @@ public interface RoundResultRepository extends MongoRepository<RoundResult, Stri
             String designation,
             String roundName
     );
- 
+
 
 }
