@@ -58,10 +58,5 @@ public class RoundService {
         return roundRepo.save(round);
     }
 
-    public void deleteRound(String roundId, boolean cascadeResults, RoundResultService roundResultService) {
-        if (cascadeResults) {
-            roundResultService.deleteByRoundId(roundId);
-        }
-        roundRepo.deleteById(roundId);
-    }
+
 }
