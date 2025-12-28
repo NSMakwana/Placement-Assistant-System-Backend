@@ -31,9 +31,5 @@ public class RoundController {
         return roundService.createRound(round);
     }
 
-    @DeleteMapping("/{roundId}")
-    public void deleteRound(@PathVariable String roundId,
-                            @RequestParam(defaultValue = "true") boolean cascadeResults) {
-        roundService.deleteRound(roundId, cascadeResults, roundResultService);
-    }
+
 }
