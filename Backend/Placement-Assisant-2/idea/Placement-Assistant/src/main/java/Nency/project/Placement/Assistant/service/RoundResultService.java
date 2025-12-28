@@ -101,4 +101,11 @@ public class RoundResultService {
         n.setRead(false);
         notificationService.createNotification(n);
     }
+    public List<RoundResult> getResultsByCompanyAndDesignation(
+            String companyId,
+            String designation
+    ) {
+        return resultRepo.findByCompanyIdAndDesignation(companyId, designation);
+    }
+
 }

@@ -32,6 +32,14 @@ public class RoundResultController {
     ) {
         return service.getResultsByCompanyAndRound(companyId, designation, roundName);
     }
+    @GetMapping("/company")
+    public List<RoundResult> getSummary(
+            @RequestParam String companyId,
+            @RequestParam String designation
+    ) {
+        return service.getResultsByCompanyAndDesignation(companyId, designation);
+    }
+
 
     // Optional: student dashboard
     @GetMapping("/student/{studentId}")
