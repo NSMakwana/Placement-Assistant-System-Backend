@@ -9,9 +9,11 @@ public interface RoundResultRepository extends MongoRepository<RoundResult, Stri
 
     List<RoundResult> findByStudentId(String studentId);
 
-    List<RoundResult> findByCompanyIdAndDesignationAndStudentId(
+    List<RoundResult> findByCompanyIdAndDesignation(String companyId, String designation);
+
+    List<RoundResult> findByCompanyIdAndDesignationAndRoundName(
             String companyId,
             String designation,
-            String studentId
+            String roundName
     );
 }

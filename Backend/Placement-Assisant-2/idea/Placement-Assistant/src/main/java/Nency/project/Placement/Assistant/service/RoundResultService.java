@@ -1,6 +1,7 @@
 package Nency.project.Placement.Assistant.service;
 
-import Nency.project.Placement.Assistant.model.*;
+import Nency.project.Placement.Assistant.model.Notification;
+import Nency.project.Placement.Assistant.model.RoundResult;
 import Nency.project.Placement.Assistant.repository.RoundResultRepository;
 import Nency.project.Placement.Assistant.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -23,10 +24,9 @@ public class RoundResultService {
         this.notificationService = notificationService;
     }
 
-    // Submit result from Page 3
+    // Page 3 → Submit Result
     public RoundResult submitResult(RoundResult input) {
 
-        // Decide placement status
         if (input.isFinalRound()) {
 
             if ("Cleared".equalsIgnoreCase(input.getStatus())) {
@@ -58,8 +58,8 @@ public class RoundResultService {
                 sendNotification(
                         input,
                         "Final Round Result",
-                        "You were not selected in the final round for "
-                                + input.getCompanyId()
+                        "You were not selected in the final round for " +
+                                input.getCompanyId()
                 );
             }
 
@@ -69,13 +69,24 @@ public class RoundResultService {
             sendNotification(
                     input,
                     "Round Result: " + input.getRoundName(),
-                    "Status: " + input.getStatus()
-                            + (input.getMarks() != null ? "\nMarks: " + input.getMarks() : "")
+                    "Status: " + input.getStatus() +
+                            (input.getMarks() != null ? "\nMarks: " + input.getMarks() : "")
             );
         }
 
         input.setSubmittedAt(Instant.now());
         return resultRepo.save(input);
+    }
+
+    // View Result Summary
+    public List<RoundResult> getResultsByCompanyAndRound(
+            String companyId,
+            String designation,
+            String roundName
+    ) {
+        return resultRepo.findByCompanyIdAndDesignationAndRoundName(
+                companyId, designation, roundName
+        );
     }
 
     public List<RoundResult> getResultsByStudent(String studentId) {

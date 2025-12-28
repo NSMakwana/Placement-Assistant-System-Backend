@@ -4,6 +4,8 @@ import Nency.project.Placement.Assistant.model.RoundResult;
 import Nency.project.Placement.Assistant.service.RoundResultService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/results")
 @CrossOrigin
@@ -15,15 +17,25 @@ public class RoundResultController {
         this.service = service;
     }
 
-    // Submit result for ONE student (Page 3)
+    // Page 3 submit
     @PostMapping("/submit")
     public RoundResult submitResult(@RequestBody RoundResult result) {
         return service.submitResult(result);
     }
 
-    // Optional: get all results of a student
+    // View Result Summary (company + round)
+    @GetMapping("/summary")
+    public List<RoundResult> getRoundSummary(
+            @RequestParam String companyId,
+            @RequestParam String designation,
+            @RequestParam String roundName
+    ) {
+        return service.getResultsByCompanyAndRound(companyId, designation, roundName);
+    }
+
+    // Optional: student dashboard
     @GetMapping("/student/{studentId}")
-    public java.util.List<RoundResult> getByStudent(@PathVariable String studentId) {
+    public List<RoundResult> getByStudent(@PathVariable String studentId) {
         return service.getResultsByStudent(studentId);
     }
 }

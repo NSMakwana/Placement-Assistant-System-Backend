@@ -17,7 +17,7 @@ public class RoundResult {
     private String designation;
     private String batch;
 
-    private String roundNo;       // reference to Round.id
+    private String roundNo;
     private String roundName;     // snapshot/ editable at submission
     private boolean finalRound;   // snapshot of round.isFinalRound at submit time
 
