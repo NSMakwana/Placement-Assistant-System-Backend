@@ -114,7 +114,7 @@ public class GeminiExtractionService {
 //    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/bigscience/bloomz-560m";
 //    private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/byt5-small";
 //     private static final String ENDPOINT = "https://api-inference.huggingface.co/models/google/flan-t5-base";
-    private static final String ENDPOINT="https://router.huggingface.co/hf-inference/models/deepseek-ai/deepseek-llm-7b-instruct\n";
+    private static final String ENDPOINT="https://router.huggingface.co/hf-inference/models/deepseek-ai/deepseek-llm-7b-instruct";
 
     public Map<String, Object> extractCompanyDetailsFromJD(String jdText) throws IOException, InterruptedException {
         String prompt = buildPrompt(jdText);
